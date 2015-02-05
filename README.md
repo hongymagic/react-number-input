@@ -17,6 +17,8 @@ npm install --save react-number-input
 
 ### Use
 
+Use it like a normal _controlled_ react form element.
+
 ```jsx
 <NumberInput id="price" onChange={this._onPriceChange} value={this.state.price} />
 ```
@@ -35,5 +37,5 @@ resulting `input` element.
 
 ## TODO
 
-* Tests
+* More tests
 * Remove lodash dependency
