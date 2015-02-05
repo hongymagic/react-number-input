@@ -2,10 +2,9 @@
   "name": "react-currency-input",
   "version": "1.0.0-pre",
   "description": "HTML input field designed to display formatted currency values",
-  "main": "index.js",
+  "main": "react-number-input.js",
   "scripts": {
-    "build": "browserify -t reactify -o dist/react-number-input.js index.js",
-    "test": "jest"
+    "test": "./node_modules/.bin/jest"
   },
   "keywords": [
     "react-component",
@@ -24,12 +23,22 @@
   },
   "license": "MIT",
   "dependencies": {
-    "intl": "^0.1.4",
     "lodash": "^3.0.1",
-    "react": "^0.12.2"
+    "numeral": "^1.5.3",
+    "react": "^0.12.2",
+    "react-tools": "^0.12.2"
   },
   "devDependencies": {
     "browserify": "^8.1.3",
+    "jest-cli": "^0.2.2",
     "reactify": "^1.0.0"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "/node_modules/react",
+      "lodash",
+      "numeral"
+    ]
   }
 }

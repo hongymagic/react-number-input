@@ -3,7 +3,7 @@
 // user loses focus of the input.
 //
 // Current dependencies are:
-//   React, Intl and Lodash
+//   React and Lodash
 //
 // Requires ES5 shim/sham in older browsers.
 //
@@ -15,15 +15,17 @@
 
 var React   = require('react');
 var _       = require('lodash');
-var Types   = React.propTypes;
+var numeral = require('numeral');
+var Types   = React.PropTypes;
 
-// Load and use polyfill for ECMA-402.
-global.Intl = require('intl');
+function format(value) {
+	return numeral(value).format('0,0[.][00]');
+}
 
 var NumberInput = React.createClass({
 	propTypes: {
 		value: Types.number,
-		onChange: Types.func.isRequired,
+		onChange: Types.func,
 		onBlur: Types.func,
 		onFocus: Types.func
 	},
@@ -31,13 +33,14 @@ var NumberInput = React.createClass({
 	getDefaultProps: function () {
 		return {
 			onBlur: function () {},
-			onFocus: function () {}
+			onFocus: function () {},
+			onChange: function () {}
 		};
 	},
 
 	getInitialState: function () {
 		return {
-			value: this.props.value
+			value: this.props.value ? format(this.props.value) : undefined
 		};
 	},
 
@@ -74,7 +77,7 @@ var NumberInput = React.createClass({
 	render: function () {
 		// Handle these events internally and trigger them after they have
 		// been processed internally.
-		var props = _.omit(this.props, ['onChange', 'onBlur', 'onFocus']);;
+		var props = _.omit(this.props, ['onChange', 'onBlur', 'onFocus']);
 
 		props.onChange = this._onChange;
 		props.onBlur = this._onBlur;
