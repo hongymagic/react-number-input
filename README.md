@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hongymagic/react-number-input.svg?branch=master)](https://travis-ci.org/hongymagic/react-number-input)
+
 # React Number Input component
 
 HTML `input` element clone with support for post-edit formatting of number
