@@ -1,5 +1,5 @@
 {
-  "name": "react-currency-input",
+  "name": "react-number-input",
   "version": "1.0.0-pre",
   "description": "HTML input field designed to display formatted currency values",
   "main": "react-number-input.js",
