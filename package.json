@@ -4,6 +4,7 @@
   "description": "HTML input field designed to display formatted currency values",
   "main": "react-number-input.js",
   "scripts": {
+    "build": "./node_modules/.bin/jsx react-number-input.jsx >| react-number-input.js",
     "test": "./node_modules/.bin/jest"
   },
   "keywords": [

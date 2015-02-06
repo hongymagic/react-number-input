@@ -22,7 +22,7 @@ function format(value) {
 	return numeral(value).format('0,0[.][00]');
 }
 
-var NumberInput = React.createClass({displayName: "NumberInput",
+var NumberInput = React.createClass({
 	propTypes: {
 		value: Types.number,
 		onChange: Types.func,
@@ -86,10 +86,10 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 		return (
 			// type="tel" used to allow number input keyboard on iOS devices.
-			React.createElement("input", React.__spread({
-				type: "tel"}, 
-				props)
-			)
+			<input
+				type="tel"
+				{...props}
+			/>
 		);
 	}
 });
