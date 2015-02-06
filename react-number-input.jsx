@@ -39,9 +39,24 @@ var NumberInput = React.createClass({
 	},
 
 	getInitialState: function () {
+		var value = this.props.value;
+
 		return {
-			value: this.props.value ? format(this.props.value) : undefined
+			focused: false,
+			value: value ? format(value) : value
 		};
+	},
+
+	componentWillReceiveProps: function (props) {
+		var value = props.value;
+
+		if (!this.state.focused) {
+			value = value ? format(value) : value;
+		}
+
+		this.setState({
+			value: value
+		});
 	},
 
 	_onChange: function (event) {
@@ -58,7 +73,10 @@ var NumberInput = React.createClass({
 		var copy = _.cloneDeep(event);
 
 		this.setState(
-			{ value: formatted },
+			{
+				value: formatted,
+				focused: false
+			},
 			function () { this.props.onBlur(copy); }
 		);
 	},
@@ -69,7 +87,10 @@ var NumberInput = React.createClass({
 		// When user focuses the input, remove all number formatting.
 		// TODO: support negative integers, and decimal points.
 		this.setState(
-			{ value: event.target.value.replace(/[^0-9]/g, '') },
+			{
+				value: event.target.value.replace(/[^0-9]/g, ''),
+				focused: true
+			},
 			function () { this.props.onFocus(copy); }
 		);
 	},
