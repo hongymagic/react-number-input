@@ -14,12 +14,24 @@
 //
 
 var React   = require('react');
-var _       = require('lodash');
 var numeral = require('numeral');
 var Types   = React.PropTypes;
 
 function format(value) {
 	return numeral(value).format('0,0[.][00]');
+}
+
+function unformat(value) {
+	return parseFloat(numeral(value).format('0[.][00]'));
+}
+
+function omit(object, keys) {
+	return Object.keys(object).reduce(function (result, key) {
+		if (keys.indexOf(key) < 0) {
+			result[key] = object[key];
+		}
+		return result;
+	}, {});
 }
 
 var NumberInput = React.createClass({displayName: "NumberInput",
@@ -41,6 +53,7 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	getInitialState: function () {
 		var value = this.props.value;
 
+		// TODO: determine if component is focused initially
 		return {
 			focused: false,
 			value: value ? format(value) : value
@@ -60,45 +73,42 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	},
 
 	_onChange: function (event) {
-		var copy = _.cloneDeep(event);
-
+		var value = unformat(event.target.value);
 		this.setState(
-			{ value: event.target.value },
-			function () { this.props.onChange(copy); }
+			{ value: value },
+			function () { this.props.onChange(value); }
 		);
 	},
 
 	_onBlur: function (event) {
+		var value = unformat(event.target.value);
 		var formatted = format(event.target.value);
-		var copy = _.cloneDeep(event);
-
 		this.setState(
 			{
 				value: formatted,
 				focused: false
 			},
-			function () { this.props.onBlur(copy); }
+			function () { this.props.onBlur(value); }
 		);
 	},
 
 	_onFocus: function (event) {
-		var copy = _.cloneDeep(event);
-
-		// When user focuses the input, remove all number formatting.
-		// TODO: support negative integers, and decimal points.
+		var value = unformat(event.target.value);
 		this.setState(
 			{
-				value: event.target.value.replace(/[^0-9]/g, ''),
+				value: value,
 				focused: true
 			},
-			function () { this.props.onFocus(copy); }
+			function () { this.props.onFocus(value); }
 		);
 	},
 
 	render: function () {
+		// TODO: re-evaluate if overriding existing event names is good
+
 		// Handle these events internally and trigger them after they have
 		// been processed internally.
-		var props = _.omit(this.props, ['onChange', 'onBlur', 'onFocus']);
+		var props = omit(this.props, ['onChange', 'onBlur', 'onFocus']);
 
 		props.onChange = this._onChange;
 		props.onBlur = this._onBlur;

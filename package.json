@@ -24,7 +24,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "^3.0.1",
     "numeral": "^1.5.3",
     "react": "^0.12.2"
   },
@@ -36,7 +35,6 @@
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
     "unmockedModulePathPatterns": [
       "/node_modules/react",
-      "lodash",
       "numeral"
     ]
   }
