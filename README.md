@@ -5,8 +5,6 @@
 HTML `input` element clone with support for post-edit formatting of number
 values. An input of `1000000` will format to `1,000,000` under `en-AU` locale.
 
-Uses `Intl` to provide support for more locales.
-
 ## Usage
 
 Usage via __npm__ and __browserify__ is recommended at this stage.
@@ -28,16 +26,39 @@ Use it like a normal _controlled_ react form element.
 All properties supplied to `NumberInput` will also be transferred to the
 resulting `input` element.
 
+### Supported event handlers
+
+Supported event handlers are:
+
+* onChange
+* onFocus
+* onBlur
+
+All of the event handlers receive the pure numeric value of the input.
+
+```jsx
+React.createClass({
+	_onChange: function (value) {
+		console.log(typeof value); // number or undefined
+	},
+
+	render: function () {
+		return (
+			<NumberInput onChange={this._onChange} value={this.state.price} />
+		);
+	}
+});
+```
+
 ## Note
 
-* Renders `input[type=tel]` element
+* Renders `input[type=tel]` element, can be overriden by providing `type` property
 * Number formatting is removed on focus
 * Number formatting is applied on blur
 * Limited/No support for decimals
-* No support for negative integers
-* Currently requires `intl` and `lodash`
+* Currently requires [`numeral`](http://numeraljs.com)
+* Assume __en-AU__ locale
 
 ## TODO
 
-* More tests
-* Remove lodash dependency
+* Add support for different locales
