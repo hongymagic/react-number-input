@@ -35,6 +35,16 @@ describe('react-number-input', function () {
 			expect(component.getDOMNode().value).toEqual('1000000');
 		});
 
+		it('should display un-formatted zeroes when all digits are zeroes', function () {
+			event.target.value = '000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('000000');
+		});
+
 		it('should display un-formatted netgative number when editing', function () {
 			event.target.value = '-900000';
 
@@ -95,6 +105,16 @@ describe('react-number-input', function () {
 
 		it('should be passed unformatted value', function () {
 			expect(handlers.onChange.mostRecentCall.args[0]).toEqual(1000000);
+		});
+
+		it('should be passed 0 when input contains all zeroes', function () {
+			Simulate.change(component.getDOMNode(), {
+				target: {
+					value: '000000'
+				}
+			});
+
+			expect(handlers.onChange.mostRecentCall.args[0]).toEqual(0);
 		});
 	});
 

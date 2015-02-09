@@ -22,7 +22,9 @@ function format(value) {
 }
 
 function unformat(value) {
-	return parseFloat(numeral(value).format('0[.][00]'));
+	return value === undefined || value === null || value === '' ?
+		null :
+		parseFloat(numeral(value).format('0[.][00]'));
 }
 
 function omit(object, keys) {
@@ -63,21 +65,39 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	componentWillReceiveProps: function (props) {
 		var value = props.value;
 
+		// Prevent changing the value via external entry when editing.
 		if (!this.state.focused) {
 			value = value ? format(value) : value;
-		}
 
-		this.setState({
-			value: value
-		});
+			this.setState({
+				value: value
+			});
+		}
+	},
+
+	_onKeyPress: function (event) {
+		if (event.which && event.which.search(/^[0-9]$/) !== 0) {
+			event.preventDefault();
+		}
 	},
 
 	_onChange: function (event) {
-		var value = unformat(event.target.value);
-		this.setState(
-			{ value: value },
-			function () { this.props.onChange(value); }
-		);
+		var value = event.target.value;
+
+		// If current value is all zeroes, let the editing continue but
+		// broadcast onChange event to parent with value of 0.
+		if (value.search(/^0+$/g) === 0) {
+			this.setState(
+				{ value: value },
+				function () { this.props.onChange(0); }
+			);
+		} else {
+			value = unformat(event.target.value);
+			this.setState(
+				{ value: value },
+				function () { this.props.onChange(value); }
+			);
+		}
 	},
 
 	_onBlur: function (event) {
@@ -108,12 +128,16 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 		// Handle these events internally and trigger them after they have
 		// been processed internally.
-		var props = omit(this.props, ['onChange', 'onBlur', 'onFocus']);
+		var props = omit(
+			this.props,
+			['onChange', 'onBlur', 'onFocus', 'onKeyPress']
+		);
 
-		props.onChange = this._onChange;
-		props.onBlur = this._onBlur;
-		props.onFocus = this._onFocus;
-		props.value = this.state.value;
+		props.onChange  = this._onChange;
+		props.onBlur    = this._onBlur;
+		props.onFocus   = this._onFocus;
+		props.onKeyPress = this._onKeyPress;
+		props.value     = this.state.value;
 
 		return (
 			// type="tel" used to allow number input keyboard on iOS devices.

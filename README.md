@@ -55,7 +55,8 @@ React.createClass({
 * Renders `input[type=tel]` element, can be overriden by providing `type` property
 * Number formatting is removed on focus
 * Number formatting is applied on blur
-* Limited/No support for decimals
+* If input contains all zeroes, zeroes are left in place until blur
+* Limited/No support for negative numbers
 * Currently requires [`numeral`](http://numeraljs.com)
 * Assume __en-AU__ locale
 
