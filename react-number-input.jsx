@@ -105,21 +105,47 @@ var NumberInput = React.createClass({
 		var formatted = format(event.target.value);
 		this.setState(
 			{
-				value: formatted,
-				focused: false
-			},
-			function () { this.props.onBlur(value); }
+			value: formatted,
+			focused: false
+		},
+		function () { this.props.onBlur(value); }
 		);
 	},
 
 	_onFocus: function (event) {
+		var target = event.target;
 		var value = unformat(event.target.value);
+
+		// IE11/FF and React.js controlled input don't seem to play well
+		// especially when value is changed on focus.
+		var caret;
+
+		if ('selectionStart' in target) {
+			caret = {
+				start: target.selectionStart,
+				end: target.selectionEnd
+			};
+
+			// If caret is not a range but a single point, we need to make sure
+			// position is maintained after removing all the commas.
+			if (target.value && caret.start === caret.end) {
+				caret.start -= target.value.substring(0, caret.end).replace(/[^,]/g, '').length;
+				caret.end = caret.start;
+			}
+		}
+
 		this.setState(
 			{
-				value: value,
-				focused: true
-			},
-			function () { this.props.onFocus(value); }
+			value: value,
+			focused: true
+		},
+		function () {
+			this.props.onFocus(value);
+
+			if (caret) {
+				target.setSelectionRange(caret.start, caret.end);
+			}
+		}
 		);
 	},
 
