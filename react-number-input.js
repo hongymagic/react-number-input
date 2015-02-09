@@ -76,7 +76,7 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	},
 
 	_onKeyPress: function (event) {
-		if (event.which && event.which.search(/^[0-9]$/) !== 0) {
+		if (event.key && event.key.search(/^[0-9]$/) !== 0) {
 			event.preventDefault();
 		}
 	},
