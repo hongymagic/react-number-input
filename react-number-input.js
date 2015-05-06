@@ -38,6 +38,8 @@ function omit(object, keys) {
 
 var NumberInput = React.createClass({displayName: "NumberInput",
 	propTypes: {
+		id: Types.string,
+		type: Types.string,
 		value: Types.number,
 		onChange: Types.func,
 		onBlur: Types.func,
@@ -82,39 +84,45 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	},
 
 	_onChange: function (event) {
-		var value = event.target.value;
+		var target = event.target;
+		var value = target.value;
+		var id = target.id;
 
 		// If current value is all zeroes, let the editing continue but
 		// broadcast onChange event to parent with value of 0.
 		if (value.search(/^0+$/g) === 0) {
 			this.setState(
 				{ value: value },
-				function () { this.props.onChange(0); }
+				function () { this.props.onChange(0, id); }
 			);
 		} else {
 			value = unformat(event.target.value);
 			this.setState(
 				{ value: value },
-				function () { this.props.onChange(value); }
+				function () { this.props.onChange(value, id); }
 			);
 		}
 	},
 
 	_onBlur: function (event) {
-		var value = unformat(event.target.value);
-		var formatted = format(event.target.value);
+		var target    = event.target;
+		var id        = target.id;
+		var value     = unformat(target.value);
+		var formatted = format(target.value);
+
 		this.setState(
 			{
 			value: formatted,
 			focused: false
 		},
-		function () { this.props.onBlur(value); }
+		function () { this.props.onBlur(value, id); }
 		);
 	},
 
 	_onFocus: function (event) {
 		var target = event.target;
-		var value = unformat(event.target.value);
+		var id     = target.id;
+		var value  = unformat(target.value);
 
 		// IE11/FF and React.js controlled input don't seem to play well
 		// especially when value is changed on focus.
@@ -140,7 +148,7 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 			focused: true
 		},
 		function () {
-			this.props.onFocus(value);
+			this.props.onFocus(value, id);
 
 			if (caret) {
 				target.setSelectionRange(caret.start, caret.end);

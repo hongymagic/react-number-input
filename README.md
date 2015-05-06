@@ -34,17 +34,22 @@ Supported event handlers are:
 * onFocus
 * onBlur
 
-All of the event handlers receive the pure numeric value of the input.
+All of the event handlers receive the pure numeric value of the input and the
+control `id`.
 
 ```jsx
 React.createClass({
-	_onChange: function (value) {
+	_onChange: function (value, id) {
 		console.log(typeof value); // number or undefined
+		console.log(typeof id);    // string or undefined
 	},
 
 	render: function () {
 		return (
-			<NumberInput onChange={this._onChange} value={this.state.price} />
+			<NumberInput
+				id='test'
+				onChange={this._onChange}
+				value={this.state.price} />
 		);
 	}
 });
