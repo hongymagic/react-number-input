@@ -24,12 +24,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "numeral": "^1.5.3",
-    "react": "^0.12.2"
   },
   "devDependencies": {
     "jest-cli": "^0.2.2",
     "react-tools": "^0.12.2"
+  },
+  "peerDependencies": {
+    "numeral": "^1.5.3",
+    "react": "^0.13.0"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
