@@ -12,7 +12,10 @@ describe('react-number-input', function () {
 
 		beforeEach(function () {
 			component = TestUtils.renderIntoDocument(
-				<NumberInput value={value} />
+				<NumberInput
+					value={value}
+					onChange={function () {}}
+				/>
 			);
 
 			event = {
@@ -78,7 +81,7 @@ describe('react-number-input', function () {
 
 	describe('onChange', function () {
 		var value = 900000;
-		var handlers, component;
+		var handlers, component, event;
 
 		beforeEach(function () {
 			handlers = {
@@ -89,37 +92,39 @@ describe('react-number-input', function () {
 
 			spyOn(handlers, 'onChange');
 			component = TestUtils.renderIntoDocument(
-				<NumberInput id='test' value={value} onChange={handlers.onChange} />
+				<NumberInput
+					id='test'
+					value={value}
+					onChange={handlers.onChange}
+				/>
 			);
 
-			Simulate.change(component.getDOMNode(), {
+			event = {
 				target: {
 					value: '1000000',
 					id: 'test'
 				}
-			});
+			};
+			Simulate.change(component.getDOMNode(), event);
 		});
 
 		it('should be run when input is changed', function () {
 			expect(handlers.onChange).toHaveBeenCalled();
 		});
 
-		it('should be passed unformatted value', function () {
-			expect(handlers.onChange.mostRecentCall.args[0]).toEqual(1000000);
-		});
-
-		it('should be passed id of the component', function () {
-			expect(handlers.onChange.mostRecentCall.args[1]).toEqual('test');
+		it.only('should be passed the original event', function () {
+			expect(handlers.onChange.mostRecentCall.args[0].target).toEqual(event.target);
 		});
 
 		it('should be passed 0 when input contains all zeroes', function () {
-			Simulate.change(component.getDOMNode(), {
+			event = {
 				target: {
 					value: '000000'
 				}
-			});
+			};
+			Simulate.change(component.getDOMNode(), event);
 
-			expect(handlers.onChange.mostRecentCall.args[0]).toEqual(0);
+			expect(handlers.onChange.mostRecentCall.args[0].target).toEqual(event.target);
 		});
 	});
 
@@ -136,7 +141,12 @@ describe('react-number-input', function () {
 
 			spyOn(handlers, 'onBlur');
 			component = TestUtils.renderIntoDocument(
-				<NumberInput id='test' value={value} onBlur={handlers.onBlur} />
+				<NumberInput
+					id='test'
+					value={value}
+					onBlur={handlers.onBlur}
+					onChange={function () {}}
+				/>
 			);
 
 			event = {
@@ -155,11 +165,7 @@ describe('react-number-input', function () {
 		});
 
 		it('should be passed unformatted value', function () {
-			expect(handlers.onBlur.mostRecentCall.args[0]).toEqual(1000000);
-		});
-
-		it('should be passed control id', function () {
-			expect(handlers.onBlur.mostRecentCall.args[1]).toEqual('test');
+			expect(handlers.onBlur.mostRecentCall.args[0].target).toEqual(event.target);
 		});
 	});
 
@@ -176,7 +182,12 @@ describe('react-number-input', function () {
 
 			spyOn(handlers, 'onFocus');
 			component = TestUtils.renderIntoDocument(
-				<NumberInput id='test' value={value} onFocus={handlers.onFocus} />
+				<NumberInput
+					id='test'
+					value={value}
+					onFocus={handlers.onFocus}
+					onChange={function () {}}
+				/>
 			);
 
 			event = {
@@ -195,11 +206,7 @@ describe('react-number-input', function () {
 		});
 
 		it('should be passed unformatted value', function () {
-			expect(handlers.onFocus.mostRecentCall.args[0]).toEqual(1000000);
-		});
-
-		it('should be passed control id', function () {
-			expect(handlers.onFocus.mostRecentCall.args[1]).toEqual('test');
+			expect(handlers.onFocus.mostRecentCall.args[0].target).toEqual(event.target);
 		});
 	});
 });

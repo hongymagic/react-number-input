@@ -1,6 +1,6 @@
 {
   "name": "react-number-input",
-  "version": "1.0.8",
+  "version": "1.12.1",
   "description": "HTML input field designed to display formatted currency values",
   "main": "react-number-input.js",
   "scripts": {
@@ -25,17 +25,17 @@
   "license": "MIT",
   "dependencies": {
     "numeral": "^1.5.3",
+    "compose-function": "^2.0.0",
     "react": "^0.12.2"
   },
   "devDependencies": {
-    "jest-cli": "^0.2.2",
+    "jest-cli": "^0.4",
     "react-tools": "^0.12.2"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",
     "unmockedModulePathPatterns": [
-      "/node_modules/react",
-      "numeral"
+      "/node_modules/.*.js"
     ]
   }
 }

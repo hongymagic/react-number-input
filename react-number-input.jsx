@@ -3,29 +3,19 @@
 // user loses focus of the input.
 //
 // Current dependencies are:
-//   React and Lodash
+//   React, numeral.js
 //
 // Requires ES5 shim/sham in older browsers.
 //
 // Current known, potential problems:
 //   * No support for negative numbers
 //   * Limited/No support for decimal numbers
-//   * Behaviour unknown when other events are attached to NumberInput
 //
 
 var React   = require('react');
 var numeral = require('numeral');
+var compose = require('underscore').compose;
 var Types   = React.PropTypes;
-
-function format(value) {
-	return numeral(value).format('0,0[.][00]');
-}
-
-function unformat(value) {
-	return value === undefined || value === null || value === '' ?
-		null :
-		parseFloat(numeral(value).format('0[.][00]'));
-}
 
 function omit(object, keys) {
 	return Object.keys(object).reduce(function (result, key) {
@@ -36,32 +26,59 @@ function omit(object, keys) {
 	}, {});
 }
 
+/**
+ * Format given value to decimal with two significant places.
+ *
+ * @param   {number}
+ * @returns {string}
+ */
+function format(value) {
+	return numeral(value).format('0,0[.][00]');
+}
+
+/**
+ * Remove any formatting from the given value.
+ *
+ * @param   {string}
+ * @returns {number}
+ */
+function unformat(value) {
+	if (typeof value === 'number') {
+		return value;
+	}
+
+	return !value ? null : parseFloat(numeral(value).format('0[.][00]'));
+}
+
 var NumberInput = React.createClass({
 	propTypes: {
-		id: Types.string,
-		type: Types.string,
-		value: Types.number,
-		onChange: Types.func,
-		onBlur: Types.func,
-		onFocus: Types.func
+		value: Types.number
 	},
 
 	getDefaultProps: function () {
 		return {
 			onBlur: function () {},
 			onFocus: function () {},
-			onChange: function () {}
+			onChange: function () {},
+			onKeyPress: function () {},
+			type: 'tel'
 		};
 	},
 
 	getInitialState: function () {
 		var value = this.props.value;
 
-		// TODO: determine if component is focused initially
 		return {
 			focused: false,
 			value: value ? format(value) : value
 		};
+	},
+
+	componentDidMount: function () {
+		// Once the component is mounted, check if the input element has focus
+		this.setState({
+			focused: global.document.activeElement === this.refs.input.getDOMNode()
+		});
 	},
 
 	componentWillReceiveProps: function (props) {
@@ -77,51 +94,52 @@ var NumberInput = React.createClass({
 		}
 	},
 
-	_onKeyPress: function (event) {
+	onKeyPress: function (event) {
 		if (event.key && event.key.search(/^[0-9]$/) !== 0) {
 			event.preventDefault();
 		}
+
+		event.persist();
+		return event;
 	},
 
-	_onChange: function (event) {
+	onChange: function (event) {
 		var target = event.target;
 		var value = target.value;
-		var id = target.id;
 
 		// If current value is all zeroes, let the editing continue but
 		// broadcast onChange event to parent with value of 0.
 		if (value.search(/^0+$/g) === 0) {
 			this.setState(
-				{ value: value },
-				function () { this.props.onChange(0, id); }
+				{ value: value }
 			);
 		} else {
-			value = unformat(event.target.value);
+			value = unformat(value);
 			this.setState(
-				{ value: value },
-				function () { this.props.onChange(value, id); }
+				{ value: value }
 			);
 		}
+
+		event.persist();
+		return event;
 	},
 
-	_onBlur: function (event) {
+	onBlur: function (event) {
 		var target    = event.target;
-		var id        = target.id;
 		var value     = unformat(target.value);
 		var formatted = format(target.value);
 
-		this.setState(
-			{
+		this.setState({
 			value: formatted,
 			focused: false
-		},
-		function () { this.props.onBlur(value, id); }
-		);
+		});
+
+		event.persist();
+		return event;
 	},
 
-	_onFocus: function (event) {
+	onFocus: function (event) {
 		var target = event.target;
-		var id     = target.id;
 		var value  = unformat(target.value);
 
 		// IE11/FF and React.js controlled input don't seem to play well
@@ -144,40 +162,36 @@ var NumberInput = React.createClass({
 
 		this.setState(
 			{
-			value: value,
-			focused: true
-		},
-		function () {
-			this.props.onFocus(value, id);
-
-			if (caret) {
-				target.setSelectionRange(caret.start, caret.end);
+				value: value,
+				focused: true
+			},
+			function () {
+				if (caret) {
+					target.setSelectionRange(caret.start, caret.end);
+				}
 			}
-		}
 		);
+
+		event.persist();
+		return event;
 	},
 
 	render: function () {
-		// TODO: re-evaluate if overriding existing event names is good
-
-		// Handle these events internally and trigger them after they have
-		// been processed internally.
-		var props = omit(
-			this.props,
-			['onChange', 'onBlur', 'onFocus', 'onKeyPress']
-		);
-
-		props.onChange  = this._onChange;
-		props.onBlur    = this._onBlur;
-		props.onFocus   = this._onFocus;
-		props.onKeyPress = this._onKeyPress;
-		props.value     = this.state.value;
+		var props = this.props;
+		var onChange = compose(props.onChange, this.onChange);
+		var onKeyPress = compose(props.onKeyPress, this.onKeyPress);
+		var onFocus = compose(props.onFocus, this.onFocus);
+		var onBlur = compose(props.onBlur, this.onBlur);
 
 		return (
-			// type="tel" used to allow number input keyboard on iOS devices.
 			<input
-				type="tel"
+				ref='input'
 				{...props}
+				value={this.state.value}
+				onChange={onChange}
+				onKeyPress={onKeyPress}
+				onBlur={onBlur}
+				onFocus={onFocus}
 			/>
 		);
 	}
