@@ -28,11 +28,7 @@ resulting `input` element.
 
 ### Supported event handlers
 
-Supported event handlers are:
-
-* onChange
-* onFocus
-* onBlur
+All event handlers supported by `<input />` are supported.
 
 All of the event handlers receive the pure numeric value of the input and the
 control `id`.
@@ -49,7 +45,9 @@ React.createClass({
 			<NumberInput
 				id='test'
 				onChange={this._onChange}
-				value={this.state.price} />
+				value={this.state.price}
+				placeholder={'0'}
+			/>
 		);
 	}
 });
