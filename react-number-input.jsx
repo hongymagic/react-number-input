@@ -14,7 +14,7 @@
 
 var React   = require('react');
 var numeral = require('numeral');
-var compose = require('underscore').compose;
+var compose = require('compose-function');
 var Types   = React.PropTypes;
 
 function omit(object, keys) {
