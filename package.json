@@ -1,17 +1,24 @@
 {
   "name": "react-number-input",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "HTML input field designed to display formatted currency values",
   "main": "react-number-input.js",
   "scripts": {
-    "build": "./node_modules/.bin/jsx react-number-input.jsx >| react-number-input.js",
-    "test": "./node_modules/.bin/jest"
+    "build": "./node_modules/.bin/jsx react-number-input.jsx > react-number-input.js",
+    "test": "./node_modules/.bin/jest",
+    "demo-build": "webpack --progress --progress --colors",
+    "demo-server": "webpack-dev-server --progress --profile --colors --hot"
+  },
+  "engines": {
+    "node": "0.10.38",
+    "npm": "1.4.28"
   },
   "keywords": [
     "react-component",
     "react",
     "currency",
-    "input"
+    "input",
+    "number"
   ],
   "author": "David G. Hong",
   "repository": {
@@ -29,8 +36,13 @@
     "react": "^0.12.2"
   },
   "devDependencies": {
+    "babel-core": "^5.8.21",
+    "babel-loader": "^5.3.2",
     "jest-cli": "^0.4",
-    "react-tools": "^0.12.2"
+    "react-hot-loader": "^1.2.8",
+    "react-tools": "^0.12.2",
+    "webpack": "^1.11.0",
+    "webpack-dev-server": "^1.10.1"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/preprocessor.js",

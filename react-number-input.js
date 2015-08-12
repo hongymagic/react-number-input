@@ -7,191 +7,176 @@
 //
 // Requires ES5 shim/sham in older browsers.
 //
-// Current known, potential problems:
-//   * No support for negative numbers
-//   * Limited/No support for decimal numbers
-//
 
 var React   = require('react');
 var numeral = require('numeral');
-var compose = require('underscore').compose;
+var compose = require('compose-function');
+var fnumber = '0,0[.][00]';
 var Types   = React.PropTypes;
 
-function omit(object, keys) {
-	return Object.keys(object).reduce(function (result, key) {
-		if (keys.indexOf(key) < 0) {
-			result[key] = object[key];
-		}
-		return result;
-	}, {});
+/**
+ * Check if a given value is a valid number.
+ *
+ * @param   {any}
+ * @returns {bool} True if given value is a valid number.
+ */
+function isNumber(value) {
+	return typeof value === 'number' && isFinite(value) && !isNaN(value);
 }
 
 /**
- * Format given value to decimal with two significant places.
+ * Safe conversion to numeral object. Numeral crashes with the value is
+ * object or function.
  *
- * @param   {number}
- * @returns {string}
+ * @param   {any}
+ * @returns {numeral}
  */
-function format(value) {
-	return numeral(value).format('0,0[.][00]');
-}
+function toNumeral(value) {
+	var type = typeof value;
+	var n;
 
-/**
- * Remove any formatting from the given value.
- *
- * @param   {string}
- * @returns {number}
- */
-function unformat(value) {
-	if (typeof value === 'number') {
-		return value;
+	if (type === 'object' || type === 'function' || type === 'boolean') {
+		return null;
 	}
 
-	return !value ? null : parseFloat(numeral(value).format('0[.][00]'));
+	n = numeral(value);
+	if (n.value() === 0 && (value !== 0 || value !== '0')) {
+		return null;
+	}
+
+	return n;
 }
 
+/**
+ * Convert given value to a number type. If conversion fails, returns NaN.
+ *
+ * @param   {any}
+ * @returns {Number} NaN if conversion fails.
+ */
+function parseNumber(value) {
+	var numeral = toNumeral(value);
+
+	if (numeral == null) {
+		return NaN;
+	}
+
+	return numeral.value();
+}
+
+/**
+ * Apply number formatting to given number value. If given value cannot be
+ * converted to a number, returns null.
+ *
+ * @param   {any}
+ * @returns {string}
+ */
+function formatNumber(value, format) {
+	var numeral = toNumeral(value);
+	return numeral ? numeral.format(format || fnumber) : null;
+}
+
+/**
+ * <NumberInput /> component
+ *
+ * @param   {Number} value
+ * @returns {Component}
+ */
 var NumberInput = React.createClass({displayName: "NumberInput",
+	statics: {
+		isNumber: isNumber,
+		formatNumber: formatNumber,
+		parseNumber: parseNumber
+	},
+
 	propTypes: {
-		value: Types.number
+		value: Types.number.isRequired,
+		format: Types.string
 	},
 
 	getDefaultProps: function () {
+		// input[type=tel] allows separators in the input field, changing it
+		// to input[type=number] will remove formatting
 		return {
 			onBlur: function () {},
 			onFocus: function () {},
 			onChange: function () {},
-			onKeyPress: function () {},
-			type: 'tel'
+			type: 'tel',
+			value: null,
+			format: fnumber
 		};
 	},
 
 	getInitialState: function () {
-		var value = this.props.value;
+		var value = parseNumber(this.props.value);
 
+		// focused: keep track of the input's focus state
+		// numeral: keep track of the input's current value (numeral object)
 		return {
 			focused: false,
-			value: value ? format(value) : value
+			value: isNumber(value) ? value : ''
 		};
 	},
 
+	componentWillReceiveProps: function (props) {
+		var value;
+
+		// Prevent changing the value via external entry when editing.
+		if (!this.state.focused && 'value' in props) {
+			value = parseNumber(props.value);
+			this.setState({ value: isNumber(value) ? value : '' });
+		}
+	},
+
 	componentDidMount: function () {
-		// Once the component is mounted, check if the input element has focus
+		// focused: check if component is focused after mounting and set state
 		this.setState({
 			focused: global.document.activeElement === this.refs.input.getDOMNode()
 		});
 	},
 
-	componentWillReceiveProps: function (props) {
-		var value = props.value;
-
-		// Prevent changing the value via external entry when editing.
-		if (!this.state.focused) {
-			value = value ? format(value) : value;
-
-			this.setState({
-				value: value
-			});
-		}
-	},
-
-	onKeyPress: function (event) {
-		if (event.key && event.key.search(/^[0-9]$/) !== 0) {
-			event.preventDefault();
-		}
-
-		event.persist();
-		return event;
-	},
-
 	onChange: function (event) {
-		var target = event.target;
-		var value = target.value;
-
-		// If current value is all zeroes, let the editing continue but
-		// broadcast onChange event to parent with value of 0.
-		if (value.search(/^0+$/g) === 0) {
-			this.setState(
-				{ value: value }
-			);
-		} else {
-			value = unformat(value);
-			this.setState(
-				{ value: value }
-			);
-		}
-
+		this.setState({ value: event.target.value });
 		event.persist();
 		return event;
 	},
 
 	onBlur: function (event) {
-		var target    = event.target;
-		var value     = unformat(target.value);
-		var formatted = format(target.value);
-
-		this.setState({
-			value: formatted,
-			focused: false
-		});
-
+		var numeral = toNumeral(event.target.value);
+		this.setState({ focused: false, value: numeral ? numeral.format(this.props.format) : '' });
 		event.persist();
 		return event;
 	},
 
 	onFocus: function (event) {
-		var target = event.target;
-		var value  = unformat(target.value);
-
-		// IE11/FF and React.js controlled input don't seem to play well
-		// especially when value is changed on focus.
-		var caret;
-
-		if ('selectionStart' in target) {
-			caret = {
-				start: target.selectionStart,
-				end: target.selectionEnd
-			};
-
-			// If caret is not a range but a single point, we need to make sure
-			// position is maintained after removing all the commas.
-			if (target.value && caret.start === caret.end) {
-				caret.start -= target.value.substring(0, caret.end).replace(/[^,]/g, '').length;
-				caret.end = caret.start;
-			}
-		}
-
-		this.setState(
-			{
-				value: value,
-				focused: true
-			},
-			function () {
-				if (caret) {
-					target.setSelectionRange(caret.start, caret.end);
-				}
-			}
-		);
-
+		var numeral = toNumeral(event.target.value);
+		this.setState({ focused: true, value: numeral ? numeral.value() : '' });
 		event.persist();
 		return event;
 	},
 
+	valueAsFormatted: function () {
+		var value = this.state.value;
+		var numeral = toNumeral(value);
+
+		return numeral ? numeral.format(this.props.format) : '';
+	},
+
 	render: function () {
 		var props = this.props;
+
 		var onChange = compose(props.onChange, this.onChange);
-		var onKeyPress = compose(props.onKeyPress, this.onKeyPress);
 		var onFocus = compose(props.onFocus, this.onFocus);
 		var onBlur = compose(props.onBlur, this.onBlur);
+		var value = this.state.focused ? this.state.value : this.valueAsFormatted();
 
 		return (
 			React.createElement("input", React.__spread({
 				ref: "input"}, 
 				props, 
-				{value: this.state.value, 
-				onChange: onChange, 
-				onKeyPress: onKeyPress, 
+				{onChange: onChange, 
 				onBlur: onBlur, 
-				onFocus: onFocus})
+				onFocus: onFocus, 
+				value: value})
 			)
 		);
 	}
