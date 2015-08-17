@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "095a10126b3f3eb7b524"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "5cddf07ca364b30c7112"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -8113,7 +8113,7 @@
 	
 	_react2['default'].render(_react2['default'].createElement(Demo, null), document.body);
 	
-	/* REACT HOT LOADER */ }).call(this); if (true) { (function () { module.hot.dispose(function (data) { data.makeHot = module.makeHot; }); if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(226), foundReactClasses = false; if (makeExportsHot(module, __webpack_require__(106))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "demo.jsx" + ": " + err.message); } }); } } })(); }
+	/* REACT HOT LOADER */ }).call(this); if (true) { (function () { module.hot.dispose(function (data) { data.makeHot = module.makeHot; }); if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(218), foundReactClasses = false; if (makeExportsHot(module, __webpack_require__(106))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "demo.jsx" + ": " + err.message); } }); } } })(); }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)(module)))
 
 /***/ },
@@ -27397,7 +27397,6 @@
 	
 	var React = __webpack_require__(106);
 	var numeral = __webpack_require__(217);
-	var compose = __webpack_require__(218);
 	var fnumber = '0,0[.][00]';
 	var Types = React.PropTypes;
 	
@@ -27427,7 +27426,16 @@
 		}
 	
 		n = numeral(value);
+	
+		// numeral.js converts empty strings/etc into 0 for no reason, so if given
+		// value was not 0 or '0' return null instead.
 		if (n.value() === 0 && (value !== 0 || value !== '0')) {
+			return null;
+		}
+	
+		// numeral.js can sometimes translate values into NaN, in which case we
+		// want to return null. e.g., '4.5.2'
+		if (isNaN(n.value())) {
 			return null;
 		}
 	
@@ -27524,22 +27532,22 @@
 		},
 	
 		onChange: function onChange(event) {
-			this.setState({ value: event.target.value });
 			event.persist();
+			this.setState({ value: event.target.value }, this.props.onChange.bind(this, event));
 			return event;
 		},
 	
 		onBlur: function onBlur(event) {
-			var numeral = toNumeral(event.target.value);
-			this.setState({ focused: false, value: numeral ? numeral.format(this.props.format) : '' });
 			event.persist();
+			var numeral = toNumeral(event.target.value);
+			this.setState({ focused: false, value: numeral ? numeral.format(this.props.format) : '' }, this.props.onBlur.bind(this, event));
 			return event;
 		},
 	
 		onFocus: function onFocus(event) {
-			var numeral = toNumeral(event.target.value);
-			this.setState({ focused: true, value: numeral ? numeral.value() : '' });
 			event.persist();
+			var numeral = toNumeral(event.target.value);
+			this.setState({ focused: true, value: numeral ? numeral.value() : '' }, this.props.onFocus.bind(this, event));
 			return event;
 		},
 	
@@ -27552,18 +27560,14 @@
 	
 		render: function render() {
 			var props = this.props;
-	
-			var onChange = compose(props.onChange, this.onChange);
-			var onFocus = compose(props.onFocus, this.onFocus);
-			var onBlur = compose(props.onBlur, this.onBlur);
 			var value = this.state.focused ? this.state.value : this.valueAsFormatted();
 	
 			return React.createElement('input', _extends({
 				ref: 'input'
 			}, props, {
-				onChange: onChange,
-				onBlur: onBlur,
-				onFocus: onFocus,
+				onChange: this.onChange,
+				onBlur: this.onBlur,
+				onFocus: this.onFocus,
 				value: value
 			}));
 		}
@@ -27571,7 +27575,7 @@
 	
 	module.exports = NumberInput;
 	
-	/* REACT HOT LOADER */ }).call(this); if (true) { (function () { module.hot.dispose(function (data) { data.makeHot = module.makeHot; }); if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(226), foundReactClasses = false; if (makeExportsHot(module, __webpack_require__(106))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "react-number-input.jsx" + ": " + err.message); } }); } } })(); }
+	/* REACT HOT LOADER */ }).call(this); if (true) { (function () { module.hot.dispose(function (data) { data.makeHot = module.makeHot; }); if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(218), foundReactClasses = false; if (makeExportsHot(module, __webpack_require__(106))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "react-number-input.jsx" + ": " + err.message); } }); } } })(); }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)(module), (function() { return this; }())))
 
 /***/ },
@@ -28263,146 +28267,10 @@
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
-	
-	module.exports = compose;
-	var arityN = _interopRequire(__webpack_require__(219));
-	
-	
-	
-	
-	var compose2 = function (f, g) {
-	  return function () {
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-	
-	    return f(g.apply(null, args));
-	  };
-	};
-	
-	function compose() {
-	  for (var _len = arguments.length, functions = Array(_len), _key = 0; _key < _len; _key++) {
-	    functions[_key] = arguments[_key];
-	  }
-	
-	  functions = functions.filter(function (fn) {
-	    return typeof fn === "function";
-	  });
-	
-	  var lastIdx = functions.length - 1;
-	  var arity = 0;
-	
-	  if (functions.length <= 0) {
-	    throw new Error("No functions passed");
-	  }
-	
-	
-	  if (lastIdx >= 0 && functions[lastIdx]) {
-	    arity = functions[lastIdx].length;
-	  }
-	
-	  return arityN(functions.reduce(compose2), arity);
-	}
-
-/***/ },
-/* 219 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arityFn = [
-	  __webpack_require__(220),
-	  __webpack_require__(221),
-	  __webpack_require__(222),
-	  __webpack_require__(223),
-	  __webpack_require__(224),
-	  __webpack_require__(225)
-	];
-	
-	module.exports = function(fn, n) {
-	  if (n && n <= 5) {
-	    return arityFn[n](fn);
-	  } else {
-	    return fn;
-	  }
-	};
-
-
-/***/ },
-/* 220 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function() {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 221 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function(a) {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 222 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function(a, b) {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 223 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function(a, b, c) {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 224 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function(a, b, c, d) {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 225 */
-/***/ function(module, exports) {
-
-	module.exports = function(fn) {
-	  return function(a, b, c, d, e) {
-	    return fn.apply(null, arguments);
-	  };
-	};
-
-
-/***/ },
-/* 226 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 	
-	var isReactClassish = __webpack_require__(227),
-	    isReactElementish = __webpack_require__(228);
+	var isReactClassish = __webpack_require__(219),
+	    isReactElementish = __webpack_require__(220);
 	
 	function makeExportsHot(m, React) {
 	  if (isReactElementish(m.exports, React)) {
@@ -28449,7 +28317,7 @@
 
 
 /***/ },
-/* 227 */
+/* 219 */
 /***/ function(module, exports) {
 
 	function hasRender(Class) {
@@ -28499,10 +28367,10 @@
 	module.exports = isReactClassish;
 
 /***/ },
-/* 228 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isReactClassish = __webpack_require__(227);
+	var isReactClassish = __webpack_require__(219);
 	
 	function isReactElementish(obj, React) {
 	  if (!obj) {
