@@ -38,6 +38,11 @@ function toNumeral(value) {
 		return null;
 	}
 
+	// numeral.js converts '1m' into '1000000'
+	if (typeof value === 'string') {
+		value = value.trim().replace(/[^\d]+$/, '');
+	}
+
 	n = numeral(value);
 
 	// numeral.js converts empty strings/etc into 0 for no reason, so if given
@@ -100,6 +105,8 @@ var NumberInput = React.createClass({
 
 	propTypes: {
 		value: Types.number.isRequired,
+		min: Types.number,
+		max: Types.number,
 		format: Types.string
 	},
 
@@ -156,6 +163,17 @@ var NumberInput = React.createClass({
 	onBlur: function (event) {
 		event.persist();
 		var numeral = toNumeral(event.target.value);
+
+		// If given value is lower than minimum, set the value to minimum
+		if (numeral && 'min' in this.props && numeral.value() < this.props.min) {
+			numeral = toNumeral(this.props.min);
+		}
+
+		// If given value is higher than maximum, set the value to maximum
+		if (numeral && 'max' in this.props && numeral.value() > this.props.max) {
+			numeral = toNumeral(this.props.max);
+		}
+
 		this.setState(
 			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
 			this.props.onBlur.bind(this, event)

@@ -14,6 +14,8 @@ describe('react-number-input', function () {
 			component = TestUtils.renderIntoDocument(
 				<NumberInput
 					value={value}
+					min={-1000000}
+					max={2000000}
 					onChange={function () {}}
 				/>
 			);
@@ -87,6 +89,28 @@ describe('react-number-input', function () {
 
 			// Verify that number has been formatted
 			expect(component.getDOMNode().value).toEqual('-900,000');
+		});
+
+		it('should reset back to minimum value if entered number is smaller', function () {
+			event.target.value = '-9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('-1,000,000');
+		});
+
+		it('should reset back to maximum value if entered number is smaller', function () {
+			event.target.value = '9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('2,000,000');
 		});
 	});
 
@@ -309,6 +333,11 @@ describe('react-number-input', function () {
 			expect(NumberInput.parseNumber('1,000,000.9')).toBe(1000000.9);
 			expect(NumberInput.parseNumber('1,000,000.94')).toBe(1000000.94);
 			expect(NumberInput.parseNumber('-1,000,000.94')).toBe(-1000000.94);
+		});
+
+		it('should not expand numeral.js shortcuts', function () {
+			expect(NumberInput.parseNumber('1m')).toBe(1);
+			expect(NumberInput.parseNumber('1t')).toBe(1);
 		});
 	});
 });
