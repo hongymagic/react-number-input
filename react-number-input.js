@@ -38,6 +38,11 @@ function toNumeral(value) {
 		return null;
 	}
 
+	// numeral.js converts '1m' into '1000000'
+	if (typeof value === 'string') {
+		value = value.trim().replace(/[^\d]+$/, '');
+	}
+
 	n = numeral(value);
 
 	// numeral.js converts empty strings/etc into 0 for no reason, so if given

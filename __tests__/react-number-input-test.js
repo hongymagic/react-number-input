@@ -334,5 +334,10 @@ describe('react-number-input', function () {
 			expect(NumberInput.parseNumber('1,000,000.94')).toBe(1000000.94);
 			expect(NumberInput.parseNumber('-1,000,000.94')).toBe(-1000000.94);
 		});
+
+		it('should not expand numeral.js shortcuts', function () {
+			expect(NumberInput.parseNumber('1m')).toBe(1);
+			expect(NumberInput.parseNumber('1t')).toBe(1);
+		});
 	});
 });
