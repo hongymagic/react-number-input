@@ -40,7 +40,7 @@ All of the event handlers receive the original event object as its argument.
 ```jsx
 React.createClass({
 	_onChange: function (event) {
-		console.log(event.target.id);; // test
+		console.log(event.target.id); // test
 	},
 
 	render: function () {
@@ -51,13 +51,15 @@ React.createClass({
 				value={this.state.price}
 				format='0,0'
 				placeholder='0'
+				min={0}
+				max={1000000}
 			/>
 		);
 	}
 });
 ```
 
-`format='0,0'` follows [numeral.js](http://numeraljs.com) format. Defaults to: `'0,0[.][00]`.
+`format='0,0'` follows [numeral.js](http://numeraljs.com) format. Defaults to: `'0,0[.][00]'`.
 
 ## Contributing / Developing / Running demo
 

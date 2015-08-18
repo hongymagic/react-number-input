@@ -100,6 +100,8 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 	propTypes: {
 		value: Types.number.isRequired,
+		min: Types.number,
+		max: Types.number,
 		format: Types.string
 	},
 
@@ -156,6 +158,17 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	onBlur: function (event) {
 		event.persist();
 		var numeral = toNumeral(event.target.value);
+
+		// If given value is lower than minimum, set the value to minimum
+		if (numeral && 'min' in this.props && numeral.value() < this.props.min) {
+			numeral = toNumeral(this.props.min);
+		}
+
+		// If given value is higher than maximum, set the value to maximum
+		if (numeral && 'max' in this.props && numeral.value() > this.props.max) {
+			numeral = toNumeral(this.props.max);
+		}
+
 		this.setState(
 			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
 			this.props.onBlur.bind(this, event)
@@ -186,11 +199,11 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 		return (
 			React.createElement("input", React.__spread({
-				ref: "input"},
-				props,
-				{onChange: this.onChange,
-				onBlur: this.onBlur,
-				onFocus: this.onFocus,
+				ref: "input"}, 
+				props, 
+				{onChange: this.onChange, 
+				onBlur: this.onBlur, 
+				onFocus: this.onFocus, 
 				value: value})
 			)
 		);

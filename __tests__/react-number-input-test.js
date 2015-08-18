@@ -14,6 +14,8 @@ describe('react-number-input', function () {
 			component = TestUtils.renderIntoDocument(
 				<NumberInput
 					value={value}
+					min={-1000000}
+					max={2000000}
 					onChange={function () {}}
 				/>
 			);
@@ -87,6 +89,28 @@ describe('react-number-input', function () {
 
 			// Verify that number has been formatted
 			expect(component.getDOMNode().value).toEqual('-900,000');
+		});
+
+		it('should reset back to minimum value if entered number is smaller', function () {
+			event.target.value = '-9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('-1,000,000');
+		});
+
+		it('should reset back to maximum value if entered number is smaller', function () {
+			event.target.value = '9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('2,000,000');
 		});
 	});
 
