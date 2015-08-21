@@ -15,6 +15,15 @@ Usage via __npm__ and __webpack__ is recommended at this stage.
 npm install --save react-number-input
 ```
 
+* __React 0.12.x__ should use `react-number-input@1.12.x`
+* __React 0.13.x__ should use `react-number-input@1.13.x`
+* __React 0.14.x__ should use `react-number-input@1.14.x`
+
+Version of this component basically maps to any new version of React in this
+way:
+
+* __React x.y.z__ becomes `react-number-input@1.y`
+
 ### Use
 
 Use it like a normal [react form](http://facebook.github.io/react/docs/forms.html) element.
@@ -40,7 +49,11 @@ All of the event handlers receive the original event object as its argument.
 ```jsx
 React.createClass({
 	_onChange: function (event) {
-		console.log(event.target.id);; // test
+		console.log(event.target.value); // raw value (without formatting)
+	},
+
+	_onBlur: function (event) {
+		console.log(event.target.value); // raw value (without formatting)
 	},
 
 	render: function () {
@@ -48,6 +61,9 @@ React.createClass({
 			<NumberInput
 				id='test'
 				onChange={this._onChange}
+				onBlur={this._onBlur}
+				min={0}
+				max={100}
 				value={this.state.price}
 				format='0,0'
 				placeholder='0'
@@ -57,7 +73,14 @@ React.createClass({
 });
 ```
 
-`format='0,0'` follows [numeral.js](http://numeraljs.com) format. Defaults to: `'0,0[.][00]`.
+If `min` is provided and user-enters a value lower than `min`, then the value
+will be converted back to `min`.
+
+If `max` is provided and user-enters a value greater than `max`, then the value
+will be converted back to `max`.
+
+`format='0,0'` follows [numeral.js](http://numeraljs.com) format. Defaults to:
+`'0,0[.][00]'`.
 
 ## Contributing / Developing / Running demo
 
