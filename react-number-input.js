@@ -8,7 +8,7 @@
 // Requires ES5 shim/sham in older browsers.
 //
 
-var React   = require('react');
+var React   = require('react/addons');
 var numeral = require('numeral');
 var fnumber = '0,0[.][00]';
 var Types   = React.PropTypes;
@@ -42,7 +42,7 @@ function toNumeral(value) {
 
 	// numeral.js converts empty strings/etc into 0 for no reason, so if given
 	// value was not 0 or '0' return null instead.
-	if (n.value() === 0 && (value !== 0 || value !== '0')) {
+	if (n.value() === 0 && !(value === 0 || value === '0')) {
 		return null;
 	}
 
@@ -90,6 +90,8 @@ function formatNumber(value, format) {
  * @returns {Component}
  */
 var NumberInput = React.createClass({displayName: "NumberInput",
+	mixins: [React.addons.PureRenderMixin],
+
 	statics: {
 		isNumber: isNumber,
 		formatNumber: formatNumber,
@@ -98,6 +100,8 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 	propTypes: {
 		value: Types.number.isRequired,
+		min: Types.number,
+		max: Types.number,
 		format: Types.string
 	},
 
@@ -154,6 +158,21 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	onBlur: function (event) {
 		event.persist();
 		var numeral = toNumeral(event.target.value);
+
+		if (numeral) {
+			// If given value is lower than specified minimum, set the value back
+			// to minimum allowed value.
+			if ('min' in this.props && numeral.value() < this.props.min) {
+				numeral = toNumeral(this.props.min);
+			}
+
+			// If given value is greater than specified minimum, set the value
+			// back to maximum allowed value.
+			if ('max' in this.props && numeral.value() > this.props.max) {
+				numeral = toNumeral(this.props.max);
+			}
+		}
+
 		this.setState(
 			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
 			this.props.onBlur.bind(this, event)

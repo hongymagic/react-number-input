@@ -36,57 +36,47 @@ describe('react-number-input', function () {
 
 		it('should display formatted value when rendered', function () {
 			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('900,000');
+			expect(React.findDOMNode(component).value).toEqual('900,000');
 		});
 
 		it('should display un-formatted number when editing', function () {
 			// Change the number
-			Simulate.focus(component.getDOMNode());
-			Simulate.change(component.getDOMNode(), event);
+			Simulate.focus(React.findDOMNode(component));
+			Simulate.change(React.findDOMNode(component), event);
 
 			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('1000000');
-		});
-
-		xit('should display un-formatted zeroes when all digits are zeroes', function () {
-			event.target.value = '000000';
-
-			// Change the number
-			Simulate.change(component.getDOMNode(), event);
-
-			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('000000');
+			expect(React.findDOMNode(component).value).toEqual('1000000');
 		});
 
 		it('should display un-formatted netgative number when editing', function () {
 			event.target.value = '-900000';
 
 			// Change the number
-			Simulate.focus(component.getDOMNode());
-			Simulate.change(component.getDOMNode(), event);
+			Simulate.focus(React.findDOMNode(component));
+			Simulate.change(React.findDOMNode(component), event);
 
 			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('-900000');
+			expect(React.findDOMNode(component).value).toEqual('-900000');
 		});
 
 		it('should display formatted number when editing is complete', function () {
 			// Change the number
-			Simulate.change(component.getDOMNode(), event);
-			Simulate.blur(component.getDOMNode());
+			Simulate.change(React.findDOMNode(component), event);
+			Simulate.blur(React.findDOMNode(component));
 
 			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('1,000,000');
+			expect(React.findDOMNode(component).value).toEqual('1,000,000');
 		});
 
 		it('should display formatted negative number when editing is complete', function () {
 			event.target.value = '-900000';
 
 			// Change the number
-			Simulate.change(component.getDOMNode(), event);
-			Simulate.blur(component.getDOMNode());
+			Simulate.change(React.findDOMNode(component), event);
+			Simulate.blur(React.findDOMNode(component));
 
 			// Verify that number has been formatted
-			expect(component.getDOMNode().value).toEqual('-900,000');
+			expect(React.findDOMNode(component).value).toEqual('-900,000');
 		});
 	});
 
@@ -116,7 +106,7 @@ describe('react-number-input', function () {
 					id: 'test'
 				}
 			};
-			Simulate.change(component.getDOMNode(), event);
+			Simulate.change(React.findDOMNode(component), event);
 		});
 
 		it('should be run when input is changed', function () {
@@ -133,7 +123,7 @@ describe('react-number-input', function () {
 					value: '000000'
 				}
 			};
-			Simulate.change(component.getDOMNode(), event);
+			Simulate.change(React.findDOMNode(component), event);
 
 			expect(handlers.onChange.mostRecentCall.args[0].target).toEqual(event.target);
 		});
@@ -167,7 +157,7 @@ describe('react-number-input', function () {
 				}
 			};
 
-			var node = component.getDOMNode();
+			var node = React.findDOMNode(component);
 			Simulate.blur(node, event);
 		});
 
@@ -208,7 +198,7 @@ describe('react-number-input', function () {
 				}
 			};
 
-			var node = component.getDOMNode();
+			var node = React.findDOMNode(component);
 			Simulate.focus(node, event);
 		});
 
@@ -221,94 +211,36 @@ describe('react-number-input', function () {
 		});
 	});
 
-	describe('NumberInput.isNumber', function () {
-		var wrong = [
-			undefined,
-			null,
-			'Hello World',
-			{ key: 0 },
-			function noop() {},
-			true,
-			false
-		];
+	describe('min/max behaviour', function () {
+		beforeEach(function () {
+			component = TestUtils.renderIntoDocument(
+				<NumberInput
+					min={0}
+					max={10}
+					type='number'
+					value={5}
+				/>
+			);
+		});
 
-		wrong.forEach(function (arg) {
-			it('should return false when fed incorrect argument: [' + typeof arg + ', ' + arg + ']', function () {
-				expect(NumberInput.isNumber(arg)).toBe(false);
+		it('should reset value to minimum value if user-entered value is lower', function () {
+			Simulate.blur(React.findDOMNode(component), {
+				target: {
+					value: '-1'
+				}
 			});
+
+			expect(React.findDOMNode(component).value).toBe('0');
 		});
-	});
 
-	describe('NumberInput.formatNumber', function () {
-		var wrong = [
-			undefined,
-			null,
-			'Hello World',
-			{ key: 0 },
-			function noop() {},
-			true,
-			false,
-			'4.5.2'
-		];
-
-		wrong.forEach(function (arg) {
-			it('should return 0 when fed incorrect argument: [' + typeof arg + ', ' + arg + ']', function () {
-				expect(NumberInput.formatNumber(arg)).toBe(null);
+		it('should reset value to maximum value if user-entered value is greater', function () {
+			Simulate.blur(React.findDOMNode(component), {
+				target: {
+					value: '11'
+				}
 			});
-		});
 
-		it('should add comma separators correctly when input is correct', function () {
-			expect(NumberInput.formatNumber(1000000)).toBe('1,000,000');
-			expect(NumberInput.formatNumber(1000000.9)).toBe('1,000,000.9');
-			expect(NumberInput.formatNumber(1000000.94)).toBe('1,000,000.94');
-			expect(NumberInput.formatNumber(-1000000.94)).toBe('-1,000,000.94');
-
-			expect(NumberInput.formatNumber('1000000')).toBe('1,000,000');
-			expect(NumberInput.formatNumber('1000000.9')).toBe('1,000,000.9');
-			expect(NumberInput.formatNumber('1000000.94')).toBe('1,000,000.94');
-			expect(NumberInput.formatNumber('-1000000.94')).toBe('-1,000,000.94');
-
-			expect(NumberInput.formatNumber('1,000,000')).toBe('1,000,000');
-			expect(NumberInput.formatNumber('1,000,000.9')).toBe('1,000,000.9');
-			expect(NumberInput.formatNumber('1,000,000.94')).toBe('1,000,000.94');
-			expect(NumberInput.formatNumber('-1,000,000.94')).toBe('-1,000,000.94');
-		});
-	});
-
-	describe('NumberInput.parseNumber', function () {
-		var wrong = [
-			undefined,
-			null,
-			'Hello World',
-			{ key: 0 },
-			function noop() {},
-			true,
-			false,
-			'4.5.2'
-		];
-
-		wrong.forEach(function (arg) {
-			it('should return 0 when fed incorrect argument: [' + typeof arg + ', ' + arg + ']', function () {
-				expect(isNaN(NumberInput.parseNumber(arg))).toBe(true);
-			});
-		});
-
-
-		it('should convert to number when input is correct', function () {
-			expect(NumberInput.parseNumber(1000000)).toBe(1000000);
-			expect(NumberInput.parseNumber(1000000.9)).toBe(1000000.9);
-			expect(NumberInput.parseNumber(1000000.94)).toBe(1000000.94);
-			expect(NumberInput.parseNumber(-1000000.94)).toBe(-1000000.94);
-
-			expect(NumberInput.parseNumber('1000000')).toBe(1000000);
-			expect(NumberInput.parseNumber('1000000.9')).toBe(1000000.9);
-			expect(NumberInput.parseNumber('1000000.94')).toBe(1000000.94);
-			expect(NumberInput.parseNumber('-1000000.94')).toBe(-1000000.94);
-
-			expect(NumberInput.parseNumber('1,000,000')).toBe(1000000);
-			expect(NumberInput.parseNumber('1,000,000.9')).toBe(1000000.9);
-			expect(NumberInput.parseNumber('1,000,000.94')).toBe(1000000.94);
-			expect(NumberInput.parseNumber('-1,000,000.94')).toBe(-1000000.94);
+			expect(React.findDOMNode(component).value).toBe('10');
 		});
 	});
 });
