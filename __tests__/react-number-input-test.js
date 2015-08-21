@@ -247,7 +247,8 @@ describe('react-number-input', function () {
 			{ key: 0 },
 			function noop() {},
 			true,
-			false
+			false,
+			'4.5.2'
 		];
 
 		wrong.forEach(function (arg) {
@@ -282,7 +283,8 @@ describe('react-number-input', function () {
 			{ key: 0 },
 			function noop() {},
 			true,
-			false
+			false,
+			'4.5.2'
 		];
 
 		wrong.forEach(function (arg) {

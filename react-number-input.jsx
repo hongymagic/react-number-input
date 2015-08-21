@@ -39,7 +39,16 @@ function toNumeral(value) {
 	}
 
 	n = numeral(value);
+
+	// numeral.js converts empty strings/etc into 0 for no reason, so if given
+	// value was not 0 or '0' return null instead.
 	if (n.value() === 0 && (value !== 0 || value !== '0')) {
+		return null;
+	}
+
+	// numeral.js can translate certain values to NaN, in which case we return
+	// null. e.g., '4.5.2'.
+	if (isNaN(n.value())) {
 		return null;
 	}
 
