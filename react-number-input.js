@@ -10,7 +10,6 @@
 
 var React   = require('react');
 var numeral = require('numeral');
-var compose = require('compose-function');
 var fnumber = '0,0[.][00]';
 var Types   = React.PropTypes;
 
@@ -135,22 +134,31 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	},
 
 	onChange: function (event) {
-		this.setState({ value: event.target.value });
 		event.persist();
+		this.setState(
+			{ value: event.target.value },
+			this.props.onChange.bind(this, event)
+		);
 		return event;
 	},
 
 	onBlur: function (event) {
-		var numeral = toNumeral(event.target.value);
-		this.setState({ focused: false, value: numeral ? numeral.format(this.props.format) : '' });
 		event.persist();
+		var numeral = toNumeral(event.target.value);
+		this.setState(
+			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
+			this.props.onBlur.bind(this, event)
+		);
 		return event;
 	},
 
 	onFocus: function (event) {
-		var numeral = toNumeral(event.target.value);
-		this.setState({ focused: true, value: numeral ? numeral.value() : '' });
 		event.persist();
+		var numeral = toNumeral(event.target.value);
+		this.setState(
+			{ focused: true, value: numeral ? numeral.value() : '' },
+			this.props.onFocus.bind(this, event)
+		);
 		return event;
 	},
 
@@ -163,19 +171,15 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 	render: function () {
 		var props = this.props;
-
-		var onChange = compose(props.onChange, this.onChange);
-		var onFocus = compose(props.onFocus, this.onFocus);
-		var onBlur = compose(props.onBlur, this.onBlur);
 		var value = this.state.focused ? this.state.value : this.valueAsFormatted();
 
 		return (
 			React.createElement("input", React.__spread({
 				ref: "input"}, 
 				props, 
-				{onChange: onChange, 
-				onBlur: onBlur, 
-				onFocus: onFocus, 
+				{onChange: this.onChange, 
+				onBlur: this.onBlur, 
+				onFocus: this.onFocus, 
 				value: value})
 			)
 		);

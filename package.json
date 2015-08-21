@@ -32,7 +32,6 @@
   "license": "MIT",
   "dependencies": {
     "numeral": "^1.5.3",
-    "compose-function": "^2.0.0",
     "react": "^0.13.3"
   },
   "devDependencies": {
