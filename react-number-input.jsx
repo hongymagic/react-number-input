@@ -8,7 +8,7 @@
 // Requires ES5 shim/sham in older browsers.
 //
 
-var React   = require('react');
+var React   = require('react/addons');
 var numeral = require('numeral');
 var fnumber = '0,0[.][00]';
 var Types   = React.PropTypes;
@@ -90,6 +90,8 @@ function formatNumber(value, format) {
  * @returns {Component}
  */
 var NumberInput = React.createClass({
+	mixins: [React.addons.PureRenderMixin],
+
 	statics: {
 		isNumber: isNumber,
 		formatNumber: formatNumber,
