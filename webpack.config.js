@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var loaders = ['babel'];
 var path = require('path');
 
 module.exports = {
