@@ -7,12 +7,30 @@ values. An input of `1000000` will format to `1,000,000` under `en-AU` locale.
 
 ## Usage
 
-Usage via __npm__ and __webpack__ is recommended at this stage.
+Usage via __npm__ and __webpack__ is recommended at this stage. `build/` 
+contains UMD compatible javascript which could be used in browsers.
 
 ### Install
 
+React version of the form `react@0.x` maps to `react-number-input@1.x`. Currently
+supports 0.12, 0.13 and 0.14.
+
+#### React@0.14.x
+
 ```
-npm install --save react-number-input
+npm install --save react-number-input@1.14
+```
+
+#### React@0.13.x
+
+```
+npm install --save react-number-input@1.13
+```
+
+#### React@0.12.x
+
+```
+npm install --save react-number-input@1.12
 ```
 
 ### Use
@@ -22,14 +40,20 @@ Use it like a normal [react form](http://facebook.github.io/react/docs/forms.htm
 ```jsx
 <NumberInput
 	id="price"
-	onChange={this._onPriceChange}
-	value={this.state.price}
-	placeholder="Enter price"
+	type="number"                   // optional, input[type]. Defaults to "tel" to allow non numeric characters
+	onChange={this.onPriceChange}   // use it like normal event handler
+	onBlur={this.onPricedUpdated}   // use it like normal event handler
+	onFocus={this.onPricedEditing}  // use it like normal event handler
+	value={this.state.price}        // normal react input binding
+	placeholder="Enter price"       // all other input properties are supported
+	min={0}                         // optional, set minimum allowed value
+	max={100}                       // optional, set maximum allowed value
+	format="0"                      // optional, numeral.js format string. Defaults to "0,0[.][00]"
 />
 ```
 
 All properties supplied to `NumberInput` will also be transferred to the
-resulting `input` element.
+resulting `input` element (e.g., `style` or `className`).
 
 ### Supported event handlers
 
@@ -40,7 +64,7 @@ All of the event handlers receive the original event object as its argument.
 ```jsx
 React.createClass({
 	_onChange: function (event) {
-		console.log(event.target.id);; // test
+		console.log(event.target.id); // test
 	},
 
 	render: function () {
@@ -57,7 +81,7 @@ React.createClass({
 });
 ```
 
-`format='0,0'` follows [numeral.js](http://numeraljs.com) format. Defaults to: `'0,0[.][00]`.
+`format="0,0"` follows [numeral.js](http://numeraljs.com) format. Defaults to: `"0,0[.][00]"`.
 
 ## Contributing / Developing / Running demo
 
@@ -68,7 +92,7 @@ can run to speed up the process.
 
 ```
 npm install
-npm run build
+npm run prerelease
 ```
 
 ### Testing react-number-input
@@ -78,6 +102,7 @@ This uses `jest-cli` version `0.4.x` and therefore it requires node version
 node versions.
 
 ```
+npm run lint
 npm run test
 ```
 
