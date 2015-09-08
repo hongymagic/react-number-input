@@ -1,52 +1,63 @@
 /* eslint no-console: 0 */
 
 import React, {Component} from 'react'
-import NumberInput from '../../src/react-number-input'
+import Field from './Field'
 
 export default class Demo extends Component {
 	constructor(props) {
 		super(props)
 
 		this.state = {
-			age: 30
+			age: 30,
+			worth: 1500000,
+			height: 181.5,
+			weight: 75.82
 		}
-
-		this.onNumberChange = this.onNumberChange.bind(this)
-		this.onNumberBlur = this.onNumberBlur.bind(this)
-	}
-
-	onNumberChange(event) {
-		console.log(`onChange trigged on #${event.target.id} with ${event.target.value}`, event.target.id, event.target.value)
-
-		const state = {}
-		state[event.target.id] = event.target.value
-		this.setState(state)
-	}
-
-	onNumberBlur(event) {
-		console.log(`onBlur trigged on #${event.target.id} with ${event.target.value}`, event.target.id, event.target.value)
-
-		const state = {}
-		state[event.target.id] = event.target.value
-		this.setState(state)
 	}
 
 	render() {
 		return (
 			<form>
-				<fieldset>
-					<legend>Standard integers without thousand separators</legend>
-					<label htmlFor="age">
-						Your age ({this.state.age})
-					</label>
-					<NumberInput
-						id="age"
-						format="0"
-						value={this.state.age}
-						onChange={this.onNumberChange}
-						onBlur={this.onNumberBlur}
-					/>
-				</fieldset>
+				<Field
+					id="age"
+					title="Standard integer without formatting"
+					label="Your age"
+					value={this.state.age}
+					format="0"
+					min={0}
+					max={150}
+					step={1}
+				/>
+				<Field
+					id="worth"
+					title="Standard integer with formatting"
+					label="Your net worth"
+					value={this.state.worth}
+					format="0,0"
+					min={-100000000}
+					max={100000000}
+					step={100}
+				/>
+				<Field
+					id="height"
+					title="Standard floating point number with optional decimals (2 sig)"
+					label="Your height (in cm)"
+					value={this.state.height}
+					format="0,0[.][00]"
+					min={0}
+					max={500}
+					step={0.5}
+				/>
+				<Field
+					id="weight"
+					title="Standard floating point number with explicit decimals (2 sig)"
+					label="Your weight (in kg)"
+					value={this.state.weight}
+					format="0,0.00"
+					min={0}
+					max={500}
+					step={0.05}
+				/>
 			</form>
 		)
 	}
