@@ -83,6 +83,14 @@ React.createClass({
 
 `format="0,0"` follows [numeral.js](http://numeraljs.com) format. Defaults to: `"0,0[.][00]"`.
 
+## Behaviour
+
+* You get raw, unchange event object `onChange`
+* You get filtered, modified `event.target.value` `onBlur`
+
+Basically, it allows users to enter anything they want by default. Only `onBlur`, we change
+that to map to whatever is specified in `format` property.
+
 ## Contributing / Developing / Running demo
 
 If you're thinking of contributing, there are a number of npm scripts you
@@ -109,11 +117,11 @@ npm run test
 ### Building and running the demo
 
 ```
-npm run demo-build
-npm run demo-server
+npm run build-demos
+npm run start
 ```
 
-Then head to [http://localhost:8080/](http://localhost:8080) to see the demo.
+Then head to [http://localhost:3000/](http://localhost:3000) to see the demo.
 
 ## Note
 

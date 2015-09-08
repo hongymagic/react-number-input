@@ -8,6 +8,7 @@
 // Requires ES5 shim/sham in older browsers.
 //
 
+import assign from 'object-assign'
 import numeral from 'numeral'
 import {Component, PropTypes, createElement} from 'react'
 
@@ -173,7 +174,7 @@ export default class NumberInput extends Component {
 		const value = this.state.focused ? this.state.value : this.valueAsFormatted()
 		return createElement(
 			'input',
-			Object.assign(
+			assign(
 				{},
 				this.props,
 				{

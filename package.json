@@ -7,7 +7,9 @@
     "prerelease": "NODE_ENV=production webpack --config webpack.prod.config.js",
     "lint": "eslint --ext .js,.jsx .",
     "karma": "karma start ./karma.conf.js",
-    "test": "npm run karma -- --single-run --reporters nyan"
+    "test": "npm run karma -- --single-run --reporters nyan",
+    "build-demos": "NODE_ENV=production webpack -p",
+    "start": "NODE_ENV=development node server.js"
   },
   "engines": {
     "node": "0.10.38",
@@ -32,6 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "numeral": "^1.5.3",
+    "object-assign": "^4.0.1",
     "react": "^0.14.0-beta3"
   },
   "devDependencies": {

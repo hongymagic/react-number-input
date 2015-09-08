@@ -1,36 +1,56 @@
 var webpack = require('webpack');
 var loaders = ['babel'];
-var path = require('path');
+var port = process.env.PORT || 3000;
+
+var plugins = [
+        new webpack.DefinePlugin({
+                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        })
+];
+var entry = {
+        demo0: './demos/demo0/index.js',
+};
+
+if (process.env.NODE_ENV === 'development') {
+        devtool = 'eval-source-map';
+        loaders = ['react-hot'].concat(loaders);
+        plugins = plugins.concat([
+                new webpack.HotModuleReplacementPlugin()
+        ]);
+        entry = Object.keys(entry).reduce(function (result, key) {
+                result[key] = [
+                        'webpack-dev-server/client?http://0.0.0.0:' + port,
+                        'webpack/hot/only-dev-server',
+                        entry[key]
+                ];
+                return result;
+        }, {});
+} else {
+        plugins = plugins.concat([
+                new webpack.optimize.OccurenceOrderPlugin()
+        ]);
+}
 
 module.exports = {
-	entry: [
-		'webpack-dev-server/client?http://127.0.0.1:8080', // WebpackDevServer host and port
-		'webpack/hot/only-dev-server',
-		'./demo.jsx' // Your appʼs entry point
-	],
-	devtool: process.env.WEBPACK_DEVTOOL || 'source-map',
+        entry: entry,
 	output: {
-		path: path.join(__dirname, 'public'),
-		filename: 'bundle.js'
-	},
-	resolve: {
-		extensions: ['', '.js', '.jsx']
+                filename: '[name]/all.js',
+                publicPath: '/demos/',
+                path: __dirname + '/demos/'
 	},
 	module: {
 		loaders: [{
 			test: /\.jsx?$/,
-			exclude: /(node_modules|bower_components)/,
-			loaders: ['react-hot', 'babel'],
-		}]
+                        exclude: /build|lib|bower_components|node_modules/,
+                        loaders: loaders
+                }],
+                preLoaders: [
+                        {test: /\.jsx?$/, loader: 'eslint', exclude: /build|lib|bower_components|node_modules/},
+                ],
 	},
-	devServer: {
-		contentBase: "./public",
-		noInfo: true, //  --no-info option
-		hot: true,
-		inline: true
+        resolve: {
+                extensions: ['', '.js', '.jsx']
 	},
-	plugins: [
-		new webpack.HotModuleReplacementPlugin(),
-		new webpack.NoErrorsPlugin()
-	]
+        plugins: plugins,
+        eslint: {configFile: '.eslintrc'}
 };
