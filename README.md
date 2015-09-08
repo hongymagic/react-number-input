@@ -7,8 +7,12 @@ values. An input of `1000000` will format to `1,000,000` under `en-AU` locale.
 
 ## Usage
 
-Usage via __npm__ and __webpack__ is recommended at this stage. `build/` 
+Usage via __npm__ and __webpack__ is recommended at this stage. `build/`
 contains UMD compatible javascript which could be used in browsers.
+
+### Demo
+
+[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/5f8c7a84d5beff6f90f86140ceb83adecf176ca2/demos/demo0/index.html)
 
 ### Install
 
@@ -104,10 +108,6 @@ npm run prerelease
 ```
 
 ### Testing react-number-input
-
-This uses `jest-cli` version `0.4.x` and therefore it requires node version
-`0.10.x` to run tests. Note that the component itself can be used in newer
-node versions.
 
 ```
 npm run lint
