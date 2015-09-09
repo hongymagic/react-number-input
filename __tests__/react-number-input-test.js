@@ -71,6 +71,29 @@ describe('react-number-input', function () {
 			expect(component.getDOMNode().value).toEqual('-900000');
 		});
 
+		it('should display zero when zero is entered', function () {
+			event.target.value = '0';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('0');
+		});
+
+		it('should display nothing when nothing is entered', function () {
+			event.target.value = '';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('');
+		});
+
+
 		it('should display formatted number when editing is complete', function () {
 			// Change the number
 			Simulate.change(component.getDOMNode(), event);
