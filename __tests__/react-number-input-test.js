@@ -14,6 +14,8 @@ describe('react-number-input', function () {
 			component = TestUtils.renderIntoDocument(
 				<NumberInput
 					value={value}
+					min={-1000000}
+					max={2000000}
 					onChange={function () {}}
 				/>
 			);
@@ -69,6 +71,29 @@ describe('react-number-input', function () {
 			expect(component.getDOMNode().value).toEqual('-900000');
 		});
 
+		it('should display zero when zero is entered', function () {
+			event.target.value = '0';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('0');
+		});
+
+		it('should display nothing when nothing is entered', function () {
+			event.target.value = '';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('');
+		});
+
+
 		it('should display formatted number when editing is complete', function () {
 			// Change the number
 			Simulate.change(component.getDOMNode(), event);
@@ -87,6 +112,28 @@ describe('react-number-input', function () {
 
 			// Verify that number has been formatted
 			expect(component.getDOMNode().value).toEqual('-900,000');
+		});
+
+		it('should reset back to minimum value if entered number is smaller', function () {
+			event.target.value = '-9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('-1,000,000');
+		});
+
+		it('should reset back to maximum value if entered number is smaller', function () {
+			event.target.value = '9000000';
+
+			// Change the number
+			Simulate.change(component.getDOMNode(), event);
+			Simulate.blur(component.getDOMNode());
+
+			// Verify that number has been formatted
+			expect(component.getDOMNode().value).toEqual('2,000,000');
 		});
 	});
 
@@ -247,7 +294,8 @@ describe('react-number-input', function () {
 			{ key: 0 },
 			function noop() {},
 			true,
-			false
+			false,
+			'4.5.2'
 		];
 
 		wrong.forEach(function (arg) {
@@ -282,7 +330,8 @@ describe('react-number-input', function () {
 			{ key: 0 },
 			function noop() {},
 			true,
-			false
+			false,
+			'4.5.2'
 		];
 
 		wrong.forEach(function (arg) {

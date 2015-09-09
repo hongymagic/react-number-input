@@ -8,9 +8,8 @@
 // Requires ES5 shim/sham in older browsers.
 //
 
-var React   = require('react');
+var React   = require('react/addons');
 var numeral = require('numeral');
-var compose = require('compose-function');
 var fnumber = '0,0[.][00]';
 var Types   = React.PropTypes;
 
@@ -40,7 +39,16 @@ function toNumeral(value) {
 	}
 
 	n = numeral(value);
-	if (n.value() === 0 && (value !== 0 || value !== '0')) {
+
+	// numeral.js converts empty strings/etc into 0 for no reason, so if given
+	// value was not 0 or '0' return null instead.
+	if (n.value() === 0 && (value !== 0 && value !== '0')) {
+		return null;
+	}
+
+	// numeral.js can sometimes translate values into NaN, in which case we
+	// want to return null. e.g., '4.5.2'
+	if (isNaN(n.value())) {
 		return null;
 	}
 
@@ -82,6 +90,8 @@ function formatNumber(value, format) {
  * @returns {Component}
  */
 var NumberInput = React.createClass({displayName: "NumberInput",
+	mixins: [React.addons.PureRenderMixin],
+
 	statics: {
 		isNumber: isNumber,
 		formatNumber: formatNumber,
@@ -90,6 +100,8 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 	propTypes: {
 		value: Types.number.isRequired,
+		min: Types.number,
+		max: Types.number,
 		format: Types.string
 	},
 
@@ -135,22 +147,42 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 	},
 
 	onChange: function (event) {
-		this.setState({ value: event.target.value });
 		event.persist();
+		this.setState(
+			{ value: event.target.value },
+			this.props.onChange.bind(this, event)
+		);
 		return event;
 	},
 
 	onBlur: function (event) {
-		var numeral = toNumeral(event.target.value);
-		this.setState({ focused: false, value: numeral ? numeral.format(this.props.format) : '' });
 		event.persist();
+		var numeral = toNumeral(event.target.value);
+
+		// If given value is lower than minimum, set the value to minimum
+		if (numeral && 'min' in this.props && numeral.value() < this.props.min) {
+			numeral = toNumeral(this.props.min);
+		}
+
+		// If given value is higher than maximum, set the value to maximum
+		if (numeral && 'max' in this.props && numeral.value() > this.props.max) {
+			numeral = toNumeral(this.props.max);
+		}
+
+		this.setState(
+			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
+			this.props.onBlur.bind(this, event)
+		);
 		return event;
 	},
 
 	onFocus: function (event) {
-		var numeral = toNumeral(event.target.value);
-		this.setState({ focused: true, value: numeral ? numeral.value() : '' });
 		event.persist();
+		var numeral = toNumeral(event.target.value);
+		this.setState(
+			{ focused: true, value: numeral ? numeral.value() : '' },
+			this.props.onFocus.bind(this, event)
+		);
 		return event;
 	},
 
@@ -163,19 +195,15 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 
 	render: function () {
 		var props = this.props;
-
-		var onChange = compose(props.onChange, this.onChange);
-		var onFocus = compose(props.onFocus, this.onFocus);
-		var onBlur = compose(props.onBlur, this.onBlur);
 		var value = this.state.focused ? this.state.value : this.valueAsFormatted();
 
 		return (
 			React.createElement("input", React.__spread({
 				ref: "input"}, 
 				props, 
-				{onChange: onChange, 
-				onBlur: onBlur, 
-				onFocus: onFocus, 
+				{onChange: this.onChange, 
+				onBlur: this.onBlur, 
+				onFocus: this.onFocus, 
 				value: value})
 			)
 		);
