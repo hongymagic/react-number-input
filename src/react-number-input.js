@@ -42,7 +42,7 @@ export function toNumeral(value) {
 
 	// numeral.js converts empty strings into 0 for no reason, so if given
 	// value was not '0' or 0, treat it as null.
-	if (n.value() === 0 && (value !== 0 || value !== '0')) {
+	if (n.value() === 0 && (value !== 0 && value !== '0')) {
 		return null
 	}
 

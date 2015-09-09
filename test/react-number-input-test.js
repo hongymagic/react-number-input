@@ -60,6 +60,28 @@ describe('react-number-input', () => {
 			expect(findDOMNode(component).value).toEqual('-900000')
 		})
 
+		it('should display zero when zero is entered! (duh)', () => {
+			event.target.value = '0'
+
+			// Change the number
+			Simulate.change(findDOMNode(component), event)
+			Simulate.blur(findDOMNode(component))
+
+			// Verify that number has been formatted
+			expect(findDOMNode(component).value).toEqual('0')
+		})
+
+		it('should display nothing when nothing is entered! (duh)', () => {
+			event.target.value = ''
+
+			// Change the number
+			Simulate.change(findDOMNode(component), event)
+			Simulate.blur(findDOMNode(component))
+
+			// Verify that number has been formatted
+			expect(findDOMNode(component).value).toEqual('')
+		})
+
 		it('should display formatted number when editing is complete', () => {
 			// Change the number
 			Simulate.change(findDOMNode(component), event)
