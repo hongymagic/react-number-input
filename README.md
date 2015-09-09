@@ -12,7 +12,7 @@ contains UMD compatible javascript which could be used in browsers.
 
 ### Demo
 
-[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/5f8c7a84d5beff6f90f86140ceb83adecf176ca2/demos/demo0/index.html)
+[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/e07e8aca0b1a213db5e2ad07e5aefd74aa001db7/demos/demo0/index.html)
 
 ### Install
 
