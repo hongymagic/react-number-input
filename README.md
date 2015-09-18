@@ -14,6 +14,16 @@ contains UMD compatible javascript which could be used in browsers.
 
 [See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/e07e8aca0b1a213db5e2ad07e5aefd74aa001db7/demos/demo0/index.html)
 
+### Screencast demo
+
+![in flight](https://raw.githubusercontent.com/hongymagic/react-number-input/master/demo.gif)
+
+Screencast demo has the following configuration:
+
+	* Optionally format to 2 decimal places
+	* No minimum
+	* No maximum
+
 ### Install
 
 React version of the form `react@0.x` maps to `react-number-input@1.x`. Currently
