@@ -62,13 +62,13 @@ function toNumeral(value) {
  * @returns {Number} NaN if conversion fails.
  */
 function parseNumber(value) {
-	var numeral = toNumeral(value);
+	var n = toNumeral(value);
 
-	if (numeral == null) {
+	if (n == null) {
 		return NaN;
 	}
 
-	return numeral.value();
+	return n.value();
 }
 
 /**
@@ -79,8 +79,8 @@ function parseNumber(value) {
  * @returns {string}
  */
 function formatNumber(value, format) {
-	var numeral = toNumeral(value);
-	return numeral ? numeral.format(format || fnumber) : null;
+	var n = toNumeral(value);
+	return n ? n.format(format || fnumber) : null;
 }
 
 /**
@@ -150,47 +150,50 @@ var NumberInput = React.createClass({displayName: "NumberInput",
 		event.persist();
 		this.setState(
 			{ value: event.target.value },
-			this.props.onChange.bind(this, event)
+			function () { this.props.onChange(event); }.bind(this)
 		);
 		return event;
 	},
 
 	onBlur: function (event) {
 		event.persist();
-		var numeral = toNumeral(event.target.value);
+		var n = toNumeral(event.target.value);
 
 		// If given value is lower than minimum, set the value to minimum
-		if (numeral && 'min' in this.props && numeral.value() < this.props.min) {
-			numeral = toNumeral(this.props.min);
+		if (n && 'min' in this.props && n.value() < this.props.min) {
+			n = toNumeral(this.props.min);
 		}
 
 		// If given value is higher than maximum, set the value to maximum
-		if (numeral && 'max' in this.props && numeral.value() > this.props.max) {
-			numeral = toNumeral(this.props.max);
+		if (n && 'max' in this.props && n.value() > this.props.max) {
+			n = toNumeral(this.props.max);
 		}
 
+		// Set the event target value to corrected value
+		event.target.value = n ? n.value() : ''
+
 		this.setState(
-			{ focused: false, value: numeral ? numeral.format(this.props.format) : '' },
-			this.props.onBlur.bind(this, event)
+			{ focused: false, value: n ? n.format(this.props.format) : '' },
+			function () { this.props.onBlur(event); }.bind(this)
 		);
 		return event;
 	},
 
 	onFocus: function (event) {
 		event.persist();
-		var numeral = toNumeral(event.target.value);
+		var n = toNumeral(event.target.value);
 		this.setState(
-			{ focused: true, value: numeral ? numeral.value() : '' },
-			this.props.onFocus.bind(this, event)
+			{ focused: true, value: n ? n.value() : '' },
+			function () { this.props.onFocus(event); }.bind(this)
 		);
 		return event;
 	},
 
 	valueAsFormatted: function () {
 		var value = this.state.value;
-		var numeral = toNumeral(value);
+		var n = toNumeral(value);
 
-		return numeral ? numeral.format(this.props.format) : '';
+		return n ? n.format(this.props.format) : '';
 	},
 
 	render: function () {
