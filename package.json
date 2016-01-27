@@ -2,7 +2,7 @@
   "name": "react-number-input",
   "version": "1.14.7",
   "description": "HTML input field designed to display formatted currency values",
-  "main": "src/react-number-input.js",
+  "main": "build/react-number-input.js",
   "scripts": {
     "prerelease": "NODE_ENV=production webpack --config webpack.prod.config.js",
     "lint": "eslint --ext .js,.jsx .",
