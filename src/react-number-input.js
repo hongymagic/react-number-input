@@ -190,7 +190,7 @@ export default class NumberInput extends Component {
 }
 
 NumberInput.propTypes = {
-	value: PropTypes.number.isRequired,
+	value: PropTypes.number,
 	type: PropTypes.string,
 	format: PropTypes.string,
 	min: PropTypes.number,
