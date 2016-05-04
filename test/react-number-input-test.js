@@ -103,6 +103,47 @@ describe('react-number-input', () => {
 		})
 	})
 
+	describe('input#value when value=null', () => {
+		const value = null
+		let component
+		let event
+
+		beforeEach(() => {
+			component = TestUtils.renderIntoDocument(
+				<NumberInput
+					value={value}
+					onChange={() => {}}
+				/>
+			)
+
+			event = {
+				target: {
+					value: '1000000'
+				}
+			}
+		})
+
+		afterEach(() => {
+			component = null
+			event = null
+		})
+
+		it('should display nothing', () => {
+			// Verify that number has been formatted
+			expect(findDOMNode(component).value).toEqual('')
+		})
+
+		it('should display un-formatted number when editing', () => {
+			// Change the number
+			Simulate.focus(findDOMNode(component))
+			Simulate.change(findDOMNode(component), event)
+
+			// Verify that number has been formatted
+			expect(findDOMNode(component).value).toEqual('1000000')
+		})
+	})
+
+
 	describe('onChange', () => {
 		const value = 900000
 		let called = false

@@ -12,7 +12,7 @@ contains UMD compatible javascript which could be used in browsers.
 
 ### Demo
 
-[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/e07e8aca0b1a213db5e2ad07e5aefd74aa001db7/demos/demo0/index.html)
+[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/master/demos/demo0/index.html)
 
 ### Screencast demo
 
@@ -26,8 +26,22 @@ Screencast demo has the following configuration:
 
 ### Install
 
+#### Prior to react@15
+
 React version of the form `react@0.x` maps to `react-number-input@1.x`. Currently
-supports 0.12, 0.13 and 0.14.
+supports 0.12, 0.13, 0.14 and 15.x
+
+#### From react@15
+
+React version of the form `react@x` maps to `react-number-input@x`.
+
+#### React@15
+
+This is the master branch.
+
+```
+npm install --save react-number-input
+```
 
 #### React@0.14.x
 

@@ -10,7 +10,7 @@
 
 import assign from 'object-assign'
 import numeral from 'numeral'
-import {Component, PropTypes, createElement} from 'react'
+import { Component, PropTypes, createElement } from 'react'
 
 const DEFAULT_NUMBER_FORMAT = '0,0[.][00]'
 
@@ -190,11 +190,14 @@ export default class NumberInput extends Component {
 }
 
 NumberInput.propTypes = {
-	value: PropTypes.number.isRequired,
+	value: PropTypes.number,
 	type: PropTypes.string,
 	format: PropTypes.string,
 	min: PropTypes.number,
-	max: PropTypes.number
+	max: PropTypes.number,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	onChange: PropTypes.func
 }
 
 NumberInput.defaultProps = {
