@@ -3,13 +3,13 @@
 // user loses focus of the input.
 //
 // Current dependencies are:
-//   React@0.14-beta3, numeral.js
+//   React@^15.0.1, numbro.js (fork of numeral.js)
 //
 // Requires ES5 shim/sham in older browsers.
 //
 
 import assign from 'object-assign'
-import numeral from 'numeral'
+import numeral from 'numbro'
 import { Component, PropTypes, createElement } from 'react'
 
 const DEFAULT_NUMBER_FORMAT = '0,0[.][00]'
@@ -88,6 +88,9 @@ export default class NumberInput extends Component {
 	constructor(props) {
 		super(props)
 
+		// Load numbro culture before performing any number parsing
+		this.loadCulture(props)
+
 		const value = parseNumber(this.props.value)
 
 		// focused: keep track of the input's focus state
@@ -103,6 +106,8 @@ export default class NumberInput extends Component {
 	}
 
 	componentWillReceiveProps(props) {
+		this.loadCulture(props)
+
 		// Prevent changing the value via external entry when editing.
 		if (!this.state.focused && 'value' in props) {
 			const value = parseNumber(props.value)
@@ -115,6 +120,14 @@ export default class NumberInput extends Component {
 		this.setState({
 			focused: global.document.activeElement === this.refs.input
 		})
+	}
+
+	loadCulture(props) {
+		numeral.loadCulturesInNode()
+
+		if (props && props.culture) {
+			numeral.culture(props.culture)
+		}
 	}
 
 	onChange(event) {
@@ -190,11 +203,12 @@ export default class NumberInput extends Component {
 }
 
 NumberInput.propTypes = {
-	value: PropTypes.number,
+	value: PropTypes.any,
 	type: PropTypes.string,
 	format: PropTypes.string,
 	min: PropTypes.number,
 	max: PropTypes.number,
+	culture: PropTypes.string,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func,
 	onChange: PropTypes.func
@@ -204,6 +218,7 @@ NumberInput.defaultProps = {
 	value: null,
 	type: 'tel',
 	format: DEFAULT_NUMBER_FORMAT,
+	culture: 'en-US',
 	onFocus: () => {},
 	onBlur: () => {},
 	onChange: () => {}

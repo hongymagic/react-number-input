@@ -12,11 +12,11 @@ contains UMD compatible javascript which could be used in browsers.
 
 ### Demo
 
-[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/master/demos/demo0/index.html)
+[See for yourself](https://cdn.rawgit.com/hongymagic/react-number-input/feature/numbro/demos/demo0/index.html)
 
 ### Screencast demo
 
-![in flight](https://raw.githubusercontent.com/hongymagic/react-number-input/master/demo.gif)
+![in flight](https://raw.githubusercontent.com/hongymagic/react-number-input/feature/numbro/demo.gif)
 
 Screencast demo has the following configuration:
 
