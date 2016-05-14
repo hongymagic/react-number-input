@@ -2,9 +2,8 @@
   "name": "react-number-input",
   "version": "15.0.0",
   "description": "HTML input field designed to display formatted currency values",
-  "main": "build/react-number-input.js",
+  "main": "src/react-number-input.js",
   "scripts": {
-    "prerelease": "NODE_ENV=production webpack --config webpack.prod.config.js",
     "lint": "eslint --ext .js,.jsx .",
     "karma": "karma start ./karma.conf.js",
     "test": "npm run karma -- --single-run --reporters nyan",
