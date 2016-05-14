@@ -16,14 +16,14 @@ export default class Field extends Component {
 	}
 
 	onChange(event) {
-		console.log(`onChange triggered #${event.target.id} with ${event.target.value}`)
+		console.log(`onChange triggered #${event.target.id} with "${event.target.value}" [${typeof event.target.value}]`)
 		this.setState({
 			value: event.target.value
 		})
 	}
 
 	onBlur(event) {
-		console.log(`onChange triggered #${event.target.id} with ${event.target.value}`)
+		console.log(`onChange triggered #${event.target.id} with "${event.target.value}" [${typeof event.target.value}]`)
 		this.setState({
 			value: event.target.value
 		})
@@ -60,7 +60,7 @@ export default class Field extends Component {
 
 Field.propTypes = {
 	id: PropTypes.string.isRequired,
-	value: PropTypes.number.isRequired,
+	value: PropTypes.number,
 	title: PropTypes.string.isRequired,
 	label: PropTypes.string.isRequired,
 	format: PropTypes.string,
