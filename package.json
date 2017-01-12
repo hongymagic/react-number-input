@@ -28,7 +28,7 @@
     "url": "https://github.com/hongymagic/react-number-input/issues"
   },
   "license": "MIT",
-  "dependencies": {
+  "peerDependencies": {
     "numeral": "^1.5.3",
     "object-assign": "^4.0.1",
     "react": "^15.0.1"
