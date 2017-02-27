@@ -21,13 +21,11 @@ const formatter = (value: VALUE_TYPE, format: string): string => {
 		formatted = '';
 	}
 
-	console.log('formatter', value, formatted);
 	return formatted;
 };
 
 const unformatter = (value: string): VALUE_TYPE => {
 	const unformatted = numbro().unformat(value) || null;
-	console.log('unformatter', value, unformatted);
 	return unformatted;
 };
 
@@ -95,7 +93,10 @@ export default class NumberInput extends Component {
 		const { onChange } = this.props;
 		const value = event.target.value;
 
-		event.persist();
+		if ('persist' in event) {
+			event.persist();
+		}
+
 		this.setState(
 			{ value },
 			() => onChange(unformatter(value), event)

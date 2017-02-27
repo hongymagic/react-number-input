@@ -44,13 +44,11 @@ var formatter = function formatter(value, format) {
 		formatted = '';
 	}
 
-	console.log('formatter', value, formatted);
 	return formatted;
 };
 
 var unformatter = function unformatter(value) {
 	var unformatted = (0, _numbro2.default)().unformat(value) || null;
-	console.log('unformatter', value, unformatted);
 	return unformatted;
 };
 
@@ -146,7 +144,10 @@ var _initialiseProps = function _initialiseProps() {
 
 		var value = event.target.value;
 
-		event.persist();
+		if ('persist' in event) {
+			event.persist();
+		}
+
 		_this3.setState({ value: value }, function () {
 			return onChange(unformatter(value), event);
 		});

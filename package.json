@@ -23,10 +23,13 @@
   "scripts": {
     "build": "babel index.js -d dist",
     "flow": "flow",
+    "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "babel-jest": "^19.0.0",
+    "babel-polyfill": "^6.23.0",
     "numbro": "^1.0",
     "react": "^0.14 || ^15.0.0-rc || ^15.0",
     "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
@@ -39,7 +42,10 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.22.0",
     "babel-preset-react": "^6.23.0",
-    "flow-bin": "^0.40.0"
+    "enzyme": "^2.7.1",
+    "flow-bin": "^0.40.0",
+    "jest": "^19.0.2",
+    "react-addons-test-utils": "^15.4.2"
   },
   "peerDependencies": {
     "numbro": "^1.0",
