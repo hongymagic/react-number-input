@@ -1,23 +1,8 @@
 {
   "name": "react-number-input",
-  "version": "15.0.0-rc2",
-  "description": "HTML input field designed to display formatted currency values",
-  "main": "build/react-number-input.js",
-  "scripts": {
-    "prerelease": "NODE_ENV=production webpack --config webpack.prod.config.js",
-    "lint": "eslint --ext .js,.jsx .",
-    "karma": "karma start ./karma.conf.js",
-    "test": "npm run karma -- --single-run --reporters nyan",
-    "build-demos": "NODE_ENV=production webpack -p",
-    "start": "NODE_ENV=development node server.js"
-  },
-  "keywords": [
-    "react-component",
-    "react",
-    "currency",
-    "input",
-    "number"
-  ],
+  "version": "15.4.0",
+  "description": "<input /> for numbers, currency and other important numbers",
+  "main": "dist/index.js",
   "author": "hongymagic",
   "repository": {
     "type": "git",
@@ -28,33 +13,37 @@
     "url": "https://github.com/hongymagic/react-number-input/issues"
   },
   "license": "MIT",
+  "keywords": [
+    "react",
+    "react-component",
+    "input",
+    "number",
+    "currency"
+  ],
+  "scripts": {
+    "build": "babel index.js -d dist",
+    "flow": "flow",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
   "dependencies": {
-    "numeral": "^1.5.3",
-    "object-assign": "^4.0.1",
-    "react": "^15.0.1"
+    "numbro": "^1.0",
+    "react": "^0.14 || ^15.0.0-rc || ^15.0",
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
-    "babel-browser-transform": "^0.1.0",
-    "babel-core": "^5.8.23",
-    "babel-eslint": "^4.1.1",
-    "babel-loader": "^5.3.2",
-    "eslint": "^1.3.1",
-    "eslint-config-airbnb": "0.0.8",
-    "eslint-loader": "^1.0.0",
-    "eslint-plugin-react": "^3.3.1",
-    "jasmine-core": "^2.3.4",
-    "karma": "^0.13.9",
-    "karma-coverage": "^0.5.1",
-    "karma-jasmine": "^0.3.6",
-    "karma-nyan-reporter": "^0.2.2",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-webpack": "^1.7.0",
-    "phantomjs": "^1.9.18",
-    "react-addons-test-utils": "^15.0.1",
-    "react-dom": "^15.0.1",
-    "react-hot-loader": "^1.3.0",
-    "webpack": "^1.12.0",
-    "webpack-dev-server": "^1.10.1"
+    "@kadira/storybook": "^2.21.0",
+    "babel-cli": "^6.23.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "flow-bin": "^0.40.0"
+  },
+  "peerDependencies": {
+    "numbro": "^1.0",
+    "react": "^0.14 || ^15.0.0-rc || ^15.0",
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
   }
 }
