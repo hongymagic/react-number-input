@@ -87,18 +87,13 @@ var NumberInput = function (_Component) {
 			// Prevent changing value via props when input is focused.
 			if (!this.state.focused && 'value' in nextProps) {
 				this.setState({
-					value: formatter(nextProps.value, nextProps.format || this.props.format)
+					value: formatter(nextProps.value, nextProps.format || this.props.format || DEFAULT_FORMAT)
 				});
 			}
 		}
-
-		// TODO: Must event be of type `any`? (flow complains of event.target.value)
-
 	}, {
 		key: 'render',
 		value: function render() {
-			var _this2 = this;
-
 			var _state = this.state,
 			    focused = _state.focused,
 			    value = _state.value;
@@ -111,15 +106,8 @@ var NumberInput = function (_Component) {
 
 			return _react2.default.createElement('input', _extends({}, rest, {
 				value: displayValue || '',
-				onFocus: function onFocus() {
-					return _this2.setState({
-						focused: true,
-						value: unformatter(value)
-					});
-				},
-				onBlur: function onBlur() {
-					return _this2.setState({ focused: false });
-				},
+				onFocus: this.onFocus,
+				onBlur: this.onBlur,
 				onChange: this.onChange
 			}));
 		}
@@ -129,27 +117,45 @@ var NumberInput = function (_Component) {
 }(_react.Component);
 
 NumberInput.defaultProps = {
+	format: DEFAULT_FORMAT,
 	type: 'tel',
 	onChange: function onChange(value) {
 		return value;
-	},
-	format: DEFAULT_FORMAT
+	}
 };
 
 var _initialiseProps = function _initialiseProps() {
-	var _this3 = this;
+	var _this2 = this;
+
+	this.onBlur = function (event) {
+		if ('persist' in event) {
+			event.persist();
+		}
+		_this2.setState({ focused: false }, function () {
+			return _this2.props.onBlur(event);
+		});
+	};
+
+	this.onFocus = function (event) {
+		if ('persist' in event) {
+			event.persist();
+		}
+		_this2.setState({
+			focused: true,
+			value: '' + (unformatter(_this2.state.value) || '')
+		}, function () {
+			return _this2.props.onFocus(event);
+		});
+	};
 
 	this.onChange = function (event) {
-		var onChange = _this3.props.onChange;
-
 		var value = event.target.value;
 
 		if ('persist' in event) {
 			event.persist();
 		}
-
-		_this3.setState({ value: value }, function () {
-			return onChange(unformatter(value), event);
+		_this2.setState({ value: value }, function () {
+			return _this2.props.onChange(unformatter(value), event);
 		});
 	};
 };
