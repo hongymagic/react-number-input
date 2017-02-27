@@ -53,7 +53,7 @@ Use it like a normal [react form](http://facebook.github.io/react/docs/forms.htm
 <NumberInput
 	id="price"
 	type="tel"                      // optional, input[type]. Defaults to "tel" to allow non numeric characters
-	onChange={this.onPriceChange}   // use it like normal event handler
+	onChange={this.onPriceChange}   // function (value: number | null, event: Event)
 	value={this.state.price}        // normal react input binding
 	placeholder="Enter price"       // all other input properties are supported
 	min={0}                         // optional, set minimum allowed value
@@ -71,14 +71,6 @@ All event handlers supported by `<input />` are supported. Except `onChange`
 received the current number as its first argument and the `Event` object as
 second argument.
 
-## Behaviour
-
-* You get raw, unchange event object `onChange`
-* You get filtered, modified `event.target.value` `onBlur`
-
-Basically, it allows users to enter anything they want by default. Only `onBlur`, we change
-that to map to whatever is specified in `format` property.
-
 ## Contributing / Developing / Running demo
 
 If you're thinking of contributing, there are a number of npm scripts you
@@ -87,25 +79,25 @@ can run to speed up the process.
 ### Building react-number-input
 
 ```
-npm install
-npm run prerelease
+yarn
+yarn build
 ```
 
 ### Testing react-number-input
 
 ```
-npm run lint
-npm run test
+yarn flow
+yarn test
 ```
 
-### Building and running the demo
+### Building and running the storybook
 
 ```
-npm run build-demos
-npm run start
+yarn build
+yarn storybook
 ```
 
-Then head to [http://localhost:3000/](http://localhost:3000) to see the demo.
+Then head to [http://localhost:6006/](http://localhost:6006) to see the demo.
 
 ## Note
 
