@@ -43,10 +43,13 @@ type Props = {
 	max?: number;
 
 	// number format: see numbro docs for examples. Defaults to `0,0`.
-	format?: string;
+	format: string;
 
 	// <input /> onChange handler with number value as first argument.
-	onChange: (value: VALUE_TYPE, event: Event) => void;
+	onChange: (value: VALUE_TYPE, event: any) => void;
+
+	onBlur: (event: any) => void;
+	onFocus: (event: any) => void;
 };
 
 type State = {
@@ -59,9 +62,9 @@ export default class NumberInput extends Component {
 	state: State;
 
 	static defaultProps = {
+		format: DEFAULT_FORMAT,
 		type: 'tel',
 		onChange: (value: number) => value,
-		format: DEFAULT_FORMAT,
 	};
 
 	constructor(props: Props) {
@@ -82,24 +85,38 @@ export default class NumberInput extends Component {
 			this.setState({
 				value: formatter(
 					nextProps.value,
-					nextProps.format || this.props.format
+					nextProps.format || this.props.format || DEFAULT_FORMAT
 				)
 			});
 		}
 	}
 
-	// TODO: Must event be of type `any`? (flow complains of event.target.value)
+	onBlur = (event: any) => {
+		if ('persist' in event) { event.persist(); }
+		this.setState(
+			{ focused: false },
+			() => this.props.onBlur(event)
+		)
+	}
+
+	onFocus = (event: any) => {
+		if ('persist' in event) { event.persist(); }
+		this.setState(
+			{
+				focused: true,
+				value: '' + (unformatter(this.state.value) || ''),
+			},
+			() => this.props.onFocus(event)
+		);
+	}
+
 	onChange = (event: any) => {
-		const { onChange } = this.props;
 		const value = event.target.value;
 
-		if ('persist' in event) {
-			event.persist();
-		}
-
+		if ('persist' in event) { event.persist(); }
 		this.setState(
 			{ value },
-			() => onChange(unformatter(value), event)
+			() => this.props.onChange(unformatter(value), event)
 		);
 	}
 
@@ -114,13 +131,8 @@ export default class NumberInput extends Component {
 			<input
 				{...rest}
 				value={displayValue || ''}
-				onFocus={() =>
-					this.setState({
-						focused: true,
-						value: unformatter(value),
-					})
-				}
-				onBlur={() => this.setState({ focused: false })}
+				onFocus={this.onFocus}
+				onBlur={this.onBlur}
 				onChange={this.onChange}
 			/>
 		);
