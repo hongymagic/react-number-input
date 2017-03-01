@@ -121,6 +121,12 @@ NumberInput.defaultProps = {
 	type: 'tel',
 	onChange: function onChange(value) {
 		return value;
+	},
+	onBlur: function onBlur(value) {
+		return null;
+	},
+	onFocus: function onFocus(value) {
+		return null;
 	}
 };
 

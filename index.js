@@ -65,6 +65,8 @@ export default class NumberInput extends Component {
 		format: DEFAULT_FORMAT,
 		type: 'tel',
 		onChange: (value: number) => value,
+		onBlur: (value: any) => null,
+		onFocus: (value: any) => null,
 	};
 
 	constructor(props: Props) {
