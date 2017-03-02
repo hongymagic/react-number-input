@@ -5,6 +5,7 @@
 		"latest",
 	],
 	"plugins": [
+		"remove-comments",
 		"transform-class-properties",
 		"transform-object-rest-spread"
 	]
