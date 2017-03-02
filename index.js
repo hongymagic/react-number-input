@@ -14,7 +14,7 @@ type VALUE_TYPE = number | null;
 // changed via the prop `format` <NumberInput format="0,0[.00]" value={3.1427} />.
 const DEFAULT_FORMAT = '0,0';
 
-const formatter = (value: VALUE_TYPE, format: string): string => {
+const toFormattedString = (value: VALUE_TYPE, format: string): string => {
 	let formatted = numbro(value).format(format) || '';
 
 	if (value === null) {
@@ -24,7 +24,7 @@ const formatter = (value: VALUE_TYPE, format: string): string => {
 	return formatted;
 };
 
-const unformatter = (value: string): VALUE_TYPE => {
+const toValue = (value: string): VALUE_TYPE => {
 	const unformatted = numbro().unformat(value) || null;
 	return unformatted;
 };
@@ -77,7 +77,7 @@ export default class NumberInput extends Component {
 		// TODO: Add support for starting out as focused.
 		this.state = {
 			focused: false,
-			value: formatter(value, format),
+			value: toFormattedString(value, format),
 		};
 	}
 
@@ -85,7 +85,7 @@ export default class NumberInput extends Component {
 		// Prevent changing value via props when input is focused.
 		if (!this.state.focused && ('value' in nextProps)) {
 			this.setState({
-				value: formatter(
+				value: toFormattedString(
 					nextProps.value,
 					nextProps.format || this.props.format || DEFAULT_FORMAT
 				)
@@ -106,7 +106,7 @@ export default class NumberInput extends Component {
 		this.setState(
 			{
 				focused: true,
-				value: '' + (unformatter(this.state.value) || ''),
+				value: '' + (toValue(this.state.value) || ''),
 			},
 			() => this.props.onFocus(event)
 		);
@@ -114,11 +114,13 @@ export default class NumberInput extends Component {
 
 	onChange = (event: any) => {
 		const value = event.target.value;
+		const { format, onChange } = this.props;
 
 		if ('persist' in event) { event.persist(); }
 		this.setState(
 			{ value },
-			() => this.props.onChange(unformatter(value), event)
+			// This ensures that decimal places are inline with supplied format.
+			() => onChange(toValue(toFormattedString(toValue(value), format)), event)
 		);
 	}
 
@@ -127,7 +129,7 @@ export default class NumberInput extends Component {
 		const { format, ...rest } = this.props;
 		const displayValue = focused
 			? value
-			: formatter(unformatter(value), format);
+			: toFormattedString(toValue(value), format);
 
 		return (
 			<input

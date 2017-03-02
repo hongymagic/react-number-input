@@ -37,7 +37,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // also takes in the VALUE_TYPE.
 var DEFAULT_FORMAT = '0,0';
 
-var formatter = function formatter(value, format) {
+var toFormattedString = function toFormattedString(value, format) {
 	var formatted = (0, _numbro2.default)(value).format(format) || '';
 
 	if (value === null) {
@@ -47,7 +47,7 @@ var formatter = function formatter(value, format) {
 	return formatted;
 };
 
-var unformatter = function unformatter(value) {
+var toValue = function toValue(value) {
 	var unformatted = (0, _numbro2.default)().unformat(value) || null;
 	return unformatted;
 };
@@ -76,7 +76,7 @@ var NumberInput = function (_Component) {
 
 		_this.state = {
 			focused: false,
-			value: formatter(value, format)
+			value: toFormattedString(value, format)
 		};
 		return _this;
 	}
@@ -87,7 +87,7 @@ var NumberInput = function (_Component) {
 			// Prevent changing value via props when input is focused.
 			if (!this.state.focused && 'value' in nextProps) {
 				this.setState({
-					value: formatter(nextProps.value, nextProps.format || this.props.format || DEFAULT_FORMAT)
+					value: toFormattedString(nextProps.value, nextProps.format || this.props.format || DEFAULT_FORMAT)
 				});
 			}
 		}
@@ -102,7 +102,7 @@ var NumberInput = function (_Component) {
 			    format = _props.format,
 			    rest = _objectWithoutProperties(_props, ['format']);
 
-			var displayValue = focused ? value : formatter(unformatter(value), format);
+			var displayValue = focused ? value : toFormattedString(toValue(value), format);
 
 			return _react2.default.createElement('input', _extends({}, rest, {
 				value: displayValue || '',
@@ -148,7 +148,7 @@ var _initialiseProps = function _initialiseProps() {
 		}
 		_this2.setState({
 			focused: true,
-			value: '' + (unformatter(_this2.state.value) || '')
+			value: '' + (toValue(_this2.state.value) || '')
 		}, function () {
 			return _this2.props.onFocus(event);
 		});
@@ -156,12 +156,18 @@ var _initialiseProps = function _initialiseProps() {
 
 	this.onChange = function (event) {
 		var value = event.target.value;
+		var _props2 = _this2.props,
+		    format = _props2.format,
+		    onChange = _props2.onChange;
+
 
 		if ('persist' in event) {
 			event.persist();
 		}
-		_this2.setState({ value: value }, function () {
-			return _this2.props.onChange(unformatter(value), event);
+		_this2.setState({ value: value },
+		// This ensures that decimal places are inline with supplied format.
+		function () {
+			return onChange(toValue(toFormattedString(toValue(value), format)), event);
 		});
 	};
 };
