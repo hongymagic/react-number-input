@@ -15,19 +15,22 @@ type VALUE_TYPE = number | null;
 const DEFAULT_FORMAT = '0,0';
 
 const toFormattedString = (value: VALUE_TYPE, format: string): string => {
-	let formatted = numbro(value).format(format) || '';
+	let boxed = numbro(value);
 
-	if (value === null) {
-		formatted = '';
+	if (isNaN(boxed.value())) {
+		return '';
 	}
 
-	return formatted;
+	return boxed.format(format) || '';
 };
 
 const toValue = (value: string): VALUE_TYPE => {
 	const unformatted = numbro().unformat(value) || null;
 	return unformatted;
 };
+
+const normalisedValue = (value: string, format: string): VALUE_TYPE =>
+	toValue(toFormattedString(toValue(value), format));
 
 /// react-number-input
 /// <NumberInput value={0}    /> => [    0]
@@ -94,10 +97,15 @@ export default class NumberInput extends Component {
 	}
 
 	onBlur = (event: any) => {
+		const { format, onBlur } = this.props;
+
 		if ('persist' in event) { event.persist(); }
 		this.setState(
-			{ focused: false },
-			() => this.props.onBlur(event)
+			{
+				focused: false,
+				value: toFormattedString(toValue(this.state.value), format),
+			},
+			() => onBlur(event)
 		)
 	}
 
@@ -120,7 +128,7 @@ export default class NumberInput extends Component {
 		this.setState(
 			{ value },
 			// This ensures that decimal places are inline with supplied format.
-			() => onChange(toValue(toFormattedString(toValue(value), format)), event)
+			() => onChange(normalisedValue(value, format), event)
 		);
 	}
 
