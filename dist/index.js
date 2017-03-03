@@ -85,16 +85,18 @@ var NumberInput = function (_Component) {
 
 			var _props = this.props,
 			    format = _props.format,
-			    rest = _objectWithoutProperties(_props, ['format']);
+			    renderer = _props.renderer,
+			    rest = _objectWithoutProperties(_props, ['format', 'renderer']);
 
 			var displayValue = focused ? value : toFormattedString(toValue(value), format);
-
-			return _react2.default.createElement('input', _extends({}, rest, {
+			var props = _extends({}, rest, {
 				value: displayValue || '',
 				onFocus: this.onFocus,
 				onBlur: this.onBlur,
 				onChange: this.onChange
-			}));
+			});
+
+			return renderer ? renderer(props) : _react2.default.createElement('input', props);
 		}
 	}]);
 

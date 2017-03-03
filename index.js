@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React, { Component, Element } from 'react';
 import numbro from 'numbro';
 
 // <NumberInput value={VALUE_TYPE} />
@@ -50,6 +50,9 @@ type Props = {
 
 	// <input /> onChange handler with number value as first argument.
 	onChange: (value: VALUE_TYPE, event: any) => void;
+
+	// Delegate rendering on <input /> to user.
+	renderer?: (props: Object) => Element<*>;
 
 	onBlur: (event: any) => void;
 	onFocus: (event: any) => void;
@@ -134,19 +137,18 @@ export default class NumberInput extends Component {
 
 	render() {
 		const { focused, value } = this.state;
-		const { format, ...rest } = this.props;
+		const { format, renderer, ...rest } = this.props;
 		const displayValue = focused
 			? value
 			: toFormattedString(toValue(value), format);
+		const props = {
+			...rest,
+			value: displayValue || '',
+			onFocus: this.onFocus,
+			onBlur: this.onBlur,
+			onChange: this.onChange,
+		};
 
-		return (
-			<input
-				{...rest}
-				value={displayValue || ''}
-				onFocus={this.onFocus}
-				onBlur={this.onBlur}
-				onChange={this.onChange}
-			/>
-		);
+		return renderer ? renderer(props) : (<input {...props} />);
 	}
 }
