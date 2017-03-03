@@ -29,18 +29,22 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var DEFAULT_FORMAT = '0,0';
 
 var toFormattedString = function toFormattedString(value, format) {
-	var formatted = (0, _numbro2.default)(value).format(format) || '';
+	var boxed = (0, _numbro2.default)(value);
 
-	if (value === null) {
-		formatted = '';
+	if (isNaN(boxed.value())) {
+		return '';
 	}
 
-	return formatted;
+	return boxed.format(format) || '';
 };
 
 var toValue = function toValue(value) {
 	var unformatted = (0, _numbro2.default)().unformat(value) || null;
 	return unformatted;
+};
+
+var normalisedValue = function normalisedValue(value, format) {
+	return toValue(toFormattedString(toValue(value), format));
 };
 
 var NumberInput = function (_Component) {
@@ -115,11 +119,19 @@ var _initialiseProps = function _initialiseProps() {
 	var _this2 = this;
 
 	this.onBlur = function (event) {
+		var _props2 = _this2.props,
+		    format = _props2.format,
+		    onBlur = _props2.onBlur;
+
+
 		if ('persist' in event) {
 			event.persist();
 		}
-		_this2.setState({ focused: false }, function () {
-			return _this2.props.onBlur(event);
+		_this2.setState({
+			focused: false,
+			value: toFormattedString(toValue(_this2.state.value), format)
+		}, function () {
+			return onBlur(event);
 		});
 	};
 
@@ -137,16 +149,16 @@ var _initialiseProps = function _initialiseProps() {
 
 	this.onChange = function (event) {
 		var value = event.target.value;
-		var _props2 = _this2.props,
-		    format = _props2.format,
-		    onChange = _props2.onChange;
+		var _props3 = _this2.props,
+		    format = _props3.format,
+		    onChange = _props3.onChange;
 
 
 		if ('persist' in event) {
 			event.persist();
 		}
 		_this2.setState({ value: value }, function () {
-			return onChange(toValue(toFormattedString(toValue(value), format)), event);
+			return onChange(normalisedValue(value, format), event);
 		});
 	};
 };
