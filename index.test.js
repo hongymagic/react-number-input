@@ -11,6 +11,14 @@ test('empty props (value) displays empty string', () => {
 	expect(component.text()).toEqual('');
 });
 
+test('null value displays empty string', () => {
+	const component = shallow(
+		<NumberInput value={null} />
+	);
+
+	expect(component.text()).toEqual('');
+});
+
 const testFormat = (value, format, expected) =>
 	test(`value (${value}) adheres to given format (${format})`, () => {
 		const component = shallow(
