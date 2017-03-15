@@ -29,17 +29,24 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var DEFAULT_FORMAT = '0,0';
 
 var toFormattedString = function toFormattedString(value, format) {
-	var boxed = (0, _numbro2.default)(value);
+	if (value === undefined || value === null) {
+		return '';
+	}
 
+	var boxed = (0, _numbro2.default)(value);
 	if (isNaN(boxed.value())) {
 		return '';
 	}
 
-	return boxed.format(format) || '';
+	return boxed.format(format);
 };
 
 var toValue = function toValue(value) {
-	var unformatted = (0, _numbro2.default)().unformat(value) || null;
+	if (!value) {
+		return null;
+	}
+
+	var unformatted = (0, _numbro2.default)().unformat(value);
 	return unformatted;
 };
 
@@ -90,7 +97,7 @@ var NumberInput = function (_Component) {
 
 			var displayValue = focused ? value : toFormattedString(toValue(value), format);
 			var props = _extends({}, rest, {
-				value: displayValue || '',
+				value: displayValue,
 				onFocus: this.onFocus,
 				onBlur: this.onBlur,
 				onChange: this.onChange
@@ -141,9 +148,15 @@ var _initialiseProps = function _initialiseProps() {
 		if ('persist' in event) {
 			event.persist();
 		}
+		var value = toValue(_this2.state.value);
+
+		if (typeof value !== 'number') {
+			value = '';
+		}
+
 		_this2.setState({
 			focused: true,
-			value: '' + (toValue(_this2.state.value) || '')
+			value: '' + value
 		}, function () {
 			return _this2.props.onFocus(event);
 		});
