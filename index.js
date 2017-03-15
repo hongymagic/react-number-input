@@ -15,17 +15,24 @@ type VALUE_TYPE = number | null;
 const DEFAULT_FORMAT = '0,0';
 
 const toFormattedString = (value: VALUE_TYPE, format: string): string => {
-	let boxed = numbro(value);
+	if (value === undefined || value === null) {
+		return '';
+	}
 
+	let boxed = numbro(value);
 	if (isNaN(boxed.value())) {
 		return '';
 	}
 
-	return boxed.format(format) || '';
+	return boxed.format(format);
 };
 
 const toValue = (value: string): VALUE_TYPE => {
-	const unformatted = numbro().unformat(value) || null;
+	if (!value) {
+		return null;
+	}
+
+	const unformatted = numbro().unformat(value);
 	return unformatted;
 };
 
@@ -114,10 +121,16 @@ export default class NumberInput extends Component {
 
 	onFocus = (event: any) => {
 		if ('persist' in event) { event.persist(); }
+		let value = (toValue(this.state.value));
+
+		if (typeof value !== 'number') {
+			value = '';
+		}
+
 		this.setState(
 			{
 				focused: true,
-				value: '' + (toValue(this.state.value) || ''),
+				value: '' + value,
 			},
 			() => this.props.onFocus(event)
 		);
@@ -143,7 +156,7 @@ export default class NumberInput extends Component {
 			: toFormattedString(toValue(value), format);
 		const props = {
 			...rest,
-			value: displayValue || '',
+			value: displayValue,
 			onFocus: this.onFocus,
 			onBlur: this.onBlur,
 			onChange: this.onChange,

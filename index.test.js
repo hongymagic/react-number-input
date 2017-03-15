@@ -3,42 +3,42 @@ import numbro from 'numbro';
 import NumberInput from './index';
 import { shallow } from 'enzyme';
 
-test('empty props (value) displays empty string', () => {
-	const component = shallow(
-		<NumberInput />
-	);
+const testInitialFormat = (states) => {
+	const _test = (value, format, expected) =>
+		test(`value '${value}' formatted to '${format}' should display '${expected}'`, () => {
+			const component = shallow(
+				<NumberInput
+					value={value}
+					format={format}
+				/>
+			);
 
-	expect(component.text()).toEqual('');
-});
+			expect(component.find('input').props().value).toEqual(expected);
+		});
 
-test('null value displays empty string', () => {
-	const component = shallow(
-		<NumberInput value={null} />
-	);
-
-	expect(component.text()).toEqual('');
-});
-
-const testFormat = (value, format, expected) =>
-	test(`value (${value}) adheres to given format (${format})`, () => {
-		const component = shallow(
-			<NumberInput value={value} format={format} />
-		);
-
-		expect(component.find('input').props().value).toEqual(expected);
+	describe('initial render()', () => {
+		states.forEach(([value, format, expected]) => _test(value, format, expected));
 	});
+};
 
-testFormat(1234567890, '0,0', '1,234,567,890');
-testFormat(1234567890, '0', '1234567890');
-testFormat(1234567890, '0,0.00', '1,234,567,890.00');
-testFormat(1234567890, '$0,0.00', '$1,234,567,890.00');
-testFormat(3.14275, '0,0', '3');
-testFormat(3.14275, '0,0.00', '3.14');
-testFormat(-3.14275, '0,0.00', '-3.14');
-
-const testOnChange = (value, expected, format = '0,0') => {
-	describe(`simulate changing value = "${value}", expected = "${expected}", format = "${format}"`, () => {
-		test(`onChange to "${value}" passes "${expected}" as first argument`, () => {
+testInitialFormat([
+	[null, '0,0', ''],
+	[null, '0,0.000', ''],
+	[0, '0,0', '0'],
+	[0, '0,0.000', '0.000'],
+	[1.234567, '0', '1'],
+	[1.234567, '0.00', '1.23'],
+	[1, '0,0', '1'],
+	[1000000, '0,0', '1,000,000'],
+	[-1000000, '0,0', '-1,000,000'],
+	[-1000000, '(0,0)', '(1,000,000)'],
+	['abcde', '0', ''],
+	['5m', '0,0', '5,000,000'],
+	['a123bcde', '0', '123'],
+]);
+const testOnChange = (value, arg, expected, format = '0,0') => {
+	describe(`simulate changing value = "${value}", expected = "${arg}", format = "${format}"`, () => {
+		test(`onChange to "${value}" passes "${arg}" as first argument`, () => {
 			const onChange = jest.fn();
 			const component = shallow(
 				<NumberInput
@@ -49,9 +49,7 @@ const testOnChange = (value, expected, format = '0,0') => {
 			);
 
 			component.find('input').simulate('change', { target: { value }});
-			component.find('input').simulate('blur', { target: { value }});
-			component.find('input').simulate('focus', {});
-			expect(onChange).toBeCalledWith(expected, expect.anything());
+			expect(onChange).toBeCalledWith(arg, expect.anything());
 		});
 
 		test(`input renders ${expected} after onChange`, () => {
@@ -63,14 +61,15 @@ const testOnChange = (value, expected, format = '0,0') => {
 			);
 
 			component.find('input').simulate('change', { target: { value }});
-			expect(component.find('input').props().value).toEqual(expected === null ? '' : numbro(expected).format(format));
+			expect(component.find('input').props().value).toEqual(expected == null || expected == '' ? '' : numbro(expected).format(format));
 		});
 	});
 };
 
-testOnChange('', null);
-testOnChange('123456', 123456);
-testOnChange('-123', -123);
-testOnChange('asdf', null);
-testOnChange('3.142', 3.14, '0.00');
-testOnChange('3.1427584', 3.14, '0.00');
+// testOnChange(value, expectedArg, expectedDisplayValue)
+testOnChange('', null, '');
+testOnChange('123456', 123456, '123,456');
+testOnChange('-123', -123, '-123');
+testOnChange('asdf', null, '');
+testOnChange('3.142', 3.14, '3.14', '0.00');
+testOnChange('3.1427584', 3.14, '3.14', '0.00');

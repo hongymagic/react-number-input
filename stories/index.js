@@ -8,9 +8,16 @@ storiesOf('NumberInput', module)
 			onChange={action('change')}
 		/>
 	))
-	.add('with value', () => (
+	.add('with value 0', () => (
 		<NumberInput
-			value={1234567890}
+			value={0}
+			format="0.000"
+			onChange={action('change')}
+		/>
+	))
+	.add('with value 1000', () => (
+		<NumberInput
+			value={1000}
 			onChange={action('change')}
 		/>
 	))
