@@ -36,21 +36,16 @@
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
-    "babel-cli": "^6.23.0",
+    "babel-cli": "^6.24.0",
     "babel-plugin-remove-comments": "^2.0.0",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-flow": "^6.23.0",
-    "babel-preset-latest": "^6.22.0",
+    "babel-preset-latest": "^6.24.0",
     "babel-preset-react": "^6.23.0",
     "enzyme": "^2.7.1",
-    "flow-bin": "^0.40.0",
+    "flow-bin": "^0.42.0",
     "jest": "^19.0.2",
     "react-addons-test-utils": "^15.4.2"
-  },
-  "peerDependencies": {
-    "numbro": "^1.0",
-    "react": "^0.14 || ^15.0.0-rc || ^15.0",
-    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
   }
 }
