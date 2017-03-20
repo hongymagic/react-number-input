@@ -8,6 +8,18 @@ storiesOf('NumberInput', module)
 			onChange={action('change')}
 		/>
 	))
+	.add('with value = null', () => (
+		<NumberInput
+			value={null}
+			onChange={action('change')}
+		/>
+	))
+	.add('with value = ""', () => (
+		<NumberInput
+			value={''}
+			onChange={action('change')}
+		/>
+	))
 	.add('with value 0', () => (
 		<NumberInput
 			value={0}
