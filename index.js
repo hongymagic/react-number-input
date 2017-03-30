@@ -39,6 +39,22 @@ const toValue = (value: string): VALUE_TYPE => {
 const normalisedValue = (value: string, format: string): VALUE_TYPE =>
 	toValue(toFormattedString(toValue(value), format));
 
+const constrainedValue = (value: VALUE_TYPE, min: VALUE_TYPE, max: VALUE_TYPE): VALUE_TYPE => {
+	if (value === null) {
+		return null;
+	}
+
+	if (min !== null && value < min) {
+		return null;
+	}
+
+	if (max !== null && value > max) {
+		return null;
+	}
+
+	return value;
+};
+
 /// react-number-input
 /// <NumberInput value={0}    /> => [    0]
 /// <NumberInput value={null} /> => [     ]
@@ -47,10 +63,10 @@ const normalisedValue = (value: string, format: string): VALUE_TYPE =>
 /// <input /> field which maps to a value of type `number`.
 
 type Props = {
-	value: number | null;
-	type?: string;
-	min?: number;
-	max?: number;
+	value: VALUE_TYPE,
+	type?: string,
+	min: VALUE_TYPE,
+	max: VALUE_TYPE,
 
 	// number format: see numbro docs for examples. Defaults to `0,0`.
 	format: string;
@@ -107,13 +123,13 @@ export default class NumberInput extends Component {
 	}
 
 	onBlur = (event: any) => {
-		const { format, onBlur } = this.props;
+		const { min, max, format, onBlur } = this.props;
 
 		if ('persist' in event) { event.persist(); }
 		this.setState(
 			{
 				focused: false,
-				value: toFormattedString(toValue(this.state.value), format),
+				value: toFormattedString(constrainedValue(normalisedValue(this.state.value, format), min, max), format),
 			},
 			() => onBlur(event)
 		)
@@ -138,13 +154,13 @@ export default class NumberInput extends Component {
 
 	onChange = (event: any) => {
 		const value = event.target.value;
-		const { format, onChange } = this.props;
+		const { min, max, format, onChange } = this.props;
 
 		if ('persist' in event) { event.persist(); }
 		this.setState(
 			{ value },
 			// This ensures that decimal places are inline with supplied format.
-			() => onChange(normalisedValue(value, format), event)
+			() => onChange(constrainedValue(normalisedValue(value, format), min, max), event)
 		);
 	}
 

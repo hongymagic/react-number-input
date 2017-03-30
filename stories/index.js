@@ -40,6 +40,34 @@ storiesOf('NumberInput', module)
 			onChange={action('change')}
 		/>
 	))
+	.add('with min (-1000) constraint', () => (
+		<NumberInput
+			value={1000}
+			min={-1000}
+			onChange={action('change')}
+			onBlur={action('blur')}
+			onFocus={action('focus')}
+		/>
+	))
+	.add('with max (1000000) constraint', () => (
+		<NumberInput
+			value={1000}
+			max={1000000}
+			onChange={action('change')}
+			onBlur={action('blur')}
+			onFocus={action('focus')}
+		/>
+	))
+	.add('with min (-1000) max (1000) constraint', () => (
+		<NumberInput
+			value={1000}
+			min={-1000}
+			max={1000}
+			onChange={action('change')}
+			onBlur={action('blur')}
+			onFocus={action('focus')}
+		/>
+	))
 	.add('with events', () => (
 		<NumberInput
 			value={3.1427}

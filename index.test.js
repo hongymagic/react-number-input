@@ -42,6 +42,8 @@ const testOnChange = (value, arg, expected, format = '0,0') => {
 			const onChange = jest.fn();
 			const component = shallow(
 				<NumberInput
+					min={-1000}
+					max={1000000}
 					format={format}
 					value={1000}
 					onChange={onChange}
@@ -55,21 +57,26 @@ const testOnChange = (value, arg, expected, format = '0,0') => {
 		test(`input renders ${expected} after onChange`, () => {
 			const component = shallow(
 				<NumberInput
+					min={-1000}
+					max={1000000}
 					format={format}
 					value={1000}
 				/>
 			);
 
 			component.find('input').simulate('change', { target: { value }});
+			component.find('input').simulate('blur', { target: { value }});
 			expect(component.find('input').props().value).toEqual(expected == null || expected == '' ? '' : numbro(expected).format(format));
 		});
 	});
 };
 
-// testOnChange(value, expectedArg, expectedDisplayValue)
+// testOnChange(value, expectedArg, expectedDisplayValue, format)
 testOnChange('', null, '');
 testOnChange('123456', 123456, '123,456');
 testOnChange('-123', -123, '-123');
 testOnChange('asdf', null, '');
 testOnChange('3.142', 3.14, '3.14', '0.00');
 testOnChange('3.1427584', 3.14, '3.14', '0.00');
+testOnChange('-50000', null, '', '0.00');
+testOnChange('50000000', null, '', '0.00');
