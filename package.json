@@ -30,7 +30,7 @@
   "dependencies": {
     "babel-jest": "^19.0.0",
     "babel-polyfill": "^6.23.0",
-    "numbro": "^1.0",
+    "numbro": "^1.10.1",
     "react": "^0.14 || ^15.0.0-rc || ^15.0",
     "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
   },
@@ -43,7 +43,7 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-latest": "^6.24.0",
     "babel-preset-react": "^6.23.0",
-    "enzyme": "^2.7.1",
+    "enzyme": "^2.8.0",
     "flow-bin": "^0.42.0",
     "jest": "^19.0.2",
     "react-addons-test-utils": "^15.4.2"
