@@ -25,7 +25,14 @@
     "flow": "flow",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --trailing-comma es5 --write",
+      "git add"
+    ]
   },
   "dependencies": {
     "babel-jest": "^19.0.0",
@@ -45,7 +52,10 @@
     "babel-preset-react": "^6.23.0",
     "enzyme": "^2.8.0",
     "flow-bin": "^0.42.0",
+    "husky": "^0.13.3",
     "jest": "^19.0.2",
+    "lint-staged": "^3.4.0",
+    "prettier": "^0.22.0",
     "react-addons-test-utils": "^15.4.2"
   }
 }

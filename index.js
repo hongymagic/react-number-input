@@ -15,44 +15,48 @@ type VALUE_TYPE = number | null;
 const DEFAULT_FORMAT = '0,0';
 
 const toFormattedString = (value: VALUE_TYPE, format: string): string => {
-	if (value === undefined || value === null) {
-		return '';
-	}
+  if (value === undefined || value === null) {
+    return '';
+  }
 
-	let boxed = numbro(value);
-	if (isNaN(boxed.value())) {
-		return '';
-	}
+  let boxed = numbro(value);
+  if (isNaN(boxed.value())) {
+    return '';
+  }
 
-	return boxed.format(format);
+  return boxed.format(format);
 };
 
 const toValue = (value: string): VALUE_TYPE => {
-	if (!value) {
-		return null;
-	}
+  if (!value) {
+    return null;
+  }
 
-	const unformatted = numbro().unformat(value);
-	return unformatted;
+  const unformatted = numbro().unformat(value);
+  return unformatted;
 };
 
 const normalisedValue = (value: string, format: string): VALUE_TYPE =>
-	toValue(toFormattedString(toValue(value), format));
+  toValue(toFormattedString(toValue(value), format));
 
-const constrainedValue = (value: VALUE_TYPE, min: VALUE_TYPE, max: VALUE_TYPE): VALUE_TYPE => {
-	if (value === null) {
-		return null;
-	}
+const constrainedValue = (
+  value: VALUE_TYPE,
+  min: VALUE_TYPE,
+  max: VALUE_TYPE
+): VALUE_TYPE => {
+  if (value === null) {
+    return null;
+  }
 
-	if (min !== null && value < min) {
-		return null;
-	}
+  if (min !== null && value < min) {
+    return null;
+  }
 
-	if (max !== null && value > max) {
-		return null;
-	}
+  if (max !== null && value > max) {
+    return null;
+  }
 
-	return value;
+  return value;
 };
 
 /// react-number-input
@@ -63,121 +67,134 @@ const constrainedValue = (value: VALUE_TYPE, min: VALUE_TYPE, max: VALUE_TYPE): 
 /// <input /> field which maps to a value of type `number`.
 
 type Props = {
-	value: VALUE_TYPE,
-	type?: string,
-	min: VALUE_TYPE,
-	max: VALUE_TYPE,
+  value: VALUE_TYPE,
+  type?: string,
+  min: VALUE_TYPE,
+  max: VALUE_TYPE,
 
-	// number format: see numbro docs for examples. Defaults to `0,0`.
-	format: string;
+  // number format: see numbro docs for examples. Defaults to `0,0`.
+  format: string,
 
-	// <input /> onChange handler with number value as first argument.
-	onChange: (value: VALUE_TYPE, event: any) => void;
+  // <input /> onChange handler with number value as first argument.
+  onChange: (value: VALUE_TYPE, event: any) => void,
 
-	// Delegate rendering on <input /> to user.
-	renderer?: (props: Object) => Element<*>;
+  // Delegate rendering on <input /> to user.
+  renderer?: (props: Object) => Element<*>,
 
-	onBlur: (event: any) => void;
-	onFocus: (event: any) => void;
+  onBlur: (event: any) => void,
+  onFocus: (event: any) => void,
 };
 
 type State = {
-	focused: boolean;
-	value: string;
+  focused: boolean,
+  value: string,
 };
 
 export default class NumberInput extends Component {
-	props: Props;
-	state: State;
+  props: Props;
+  state: State;
 
-	static defaultProps = {
-		format: DEFAULT_FORMAT,
-		type: 'tel',
-		onChange: (value: number) => value,
-		onBlur: (value: any) => null,
-		onFocus: (value: any) => null,
-	};
+  static defaultProps = {
+    format: DEFAULT_FORMAT,
+    type: 'tel',
+    onChange: (value: number) => value,
+    onBlur: (value: any) => null,
+    onFocus: (value: any) => null,
+  };
 
-	constructor(props: Props) {
-		super(props);
+  constructor(props: Props) {
+    super(props);
 
-		const { format, value } = props;
+    const { format, value } = props;
 
-		// TODO: Add support for starting out as focused.
-		this.state = {
-			focused: false,
-			value: toFormattedString(value, format),
-		};
-	}
+    // TODO: Add support for starting out as focused.
+    this.state = {
+      focused: false,
+      value: toFormattedString(value, format),
+    };
+  }
 
-	componentWillReceiveProps(nextProps: Props) {
-		// Prevent changing value via props when input is focused.
-		if (!this.state.focused && ('value' in nextProps)) {
-			this.setState({
-				value: toFormattedString(
-					nextProps.value,
-					nextProps.format || this.props.format || DEFAULT_FORMAT
-				)
-			});
-		}
-	}
+  componentWillReceiveProps(nextProps: Props) {
+    // Prevent changing value via props when input is focused.
+    if (!this.state.focused && 'value' in nextProps) {
+      this.setState({
+        value: toFormattedString(
+          nextProps.value,
+          nextProps.format || this.props.format || DEFAULT_FORMAT
+        ),
+      });
+    }
+  }
 
-	onBlur = (event: any) => {
-		const { min, max, format, onBlur } = this.props;
+  onBlur = (event: any) => {
+    const { min, max, format, onBlur } = this.props;
 
-		if ('persist' in event) { event.persist(); }
-		this.setState(
-			{
-				focused: false,
-				value: toFormattedString(constrainedValue(normalisedValue(this.state.value, format), min, max), format),
-			},
-			() => onBlur(event)
-		)
-	}
+    if ('persist' in event) {
+      event.persist();
+    }
+    this.setState(
+      {
+        focused: false,
+        value: toFormattedString(
+          constrainedValue(normalisedValue(this.state.value, format), min, max),
+          format
+        ),
+      },
+      () => onBlur(event)
+    );
+  };
 
-	onFocus = (event: any) => {
-		if ('persist' in event) { event.persist(); }
-		let value = (toValue(this.state.value));
+  onFocus = (event: any) => {
+    if ('persist' in event) {
+      event.persist();
+    }
+    let value = toValue(this.state.value);
 
-		if (typeof value !== 'number') {
-			value = '';
-		}
+    if (typeof value !== 'number') {
+      value = '';
+    }
 
-		this.setState(
-			{
-				focused: true,
-				value: '' + value,
-			},
-			() => this.props.onFocus(event)
-		);
-	}
+    this.setState(
+      {
+        focused: true,
+        value: '' + value,
+      },
+      () => this.props.onFocus(event)
+    );
+  };
 
-	onChange = (event: any) => {
-		const value = event.target.value;
-		const { min, max, format, onChange } = this.props;
+  onChange = (event: any) => {
+    const value = event.target.value;
+    const { min, max, format, onChange } = this.props;
 
-		if ('persist' in event) { event.persist(); }
-		this.setState(
-			{ value },
-			// This ensures that decimal places are inline with supplied format.
-			() => onChange(constrainedValue(normalisedValue(value, format), min, max), event)
-		);
-	}
+    if ('persist' in event) {
+      event.persist();
+    }
+    this.setState(
+      { value },
+      // This ensures that decimal places are inline with supplied format.
+      () =>
+        onChange(
+          constrainedValue(normalisedValue(value, format), min, max),
+          event
+        )
+    );
+  };
 
-	render() {
-		const { focused, value } = this.state;
-		const { format, renderer, ...rest } = this.props;
-		const displayValue = focused
-			? value
-			: toFormattedString(toValue(value), format);
-		const props = {
-			...rest,
-			value: displayValue,
-			onFocus: this.onFocus,
-			onBlur: this.onBlur,
-			onChange: this.onChange,
-		};
+  render() {
+    const { focused, value } = this.state;
+    const { format, renderer, ...rest } = this.props;
+    const displayValue = focused
+      ? value
+      : toFormattedString(toValue(value), format);
+    const props = {
+      ...rest,
+      value: displayValue,
+      onFocus: this.onFocus,
+      onBlur: this.onBlur,
+      onChange: this.onChange,
+    };
 
-		return renderer ? renderer(props) : (<input {...props} />);
-	}
+    return renderer ? renderer(props) : <input {...props} />;
+  }
 }
