@@ -73,5 +73,5 @@ testOnChange('-123', -123, '-123');
 testOnChange('asdf', null, '');
 testOnChange('3.142', 3.14, '3.14', '0.00');
 testOnChange('3.1427584', 3.14, '3.14', '0.00');
-testOnChange('-50000', null, '', '0.00');
-testOnChange('50000000', null, '', '0.00');
+testOnChange('-50000', -1000, '-1,000', '0.00');
+testOnChange('50000000', 1000000, '1,000,000', '0.00');

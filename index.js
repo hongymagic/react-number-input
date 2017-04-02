@@ -49,11 +49,11 @@ const constrainedValue = (
   }
 
   if (min !== null && value < min) {
-    return null;
+    return min;
   }
 
   if (max !== null && value > max) {
-    return null;
+    return max;
   }
 
   return value;
