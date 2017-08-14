@@ -10,9 +10,9 @@ import numbro from 'numbro';
 // also takes in the VALUE_TYPE.
 type VALUE_TYPE = number | null;
 
-// The default number format is an integer with thousand-separators. This can be
+// The default number format is an integer or decimals with thousand-separators. This can be
 // changed via the prop `format` <NumberInput format="0,0[.00]" value={3.1427} />.
-const DEFAULT_FORMAT = '0,0';
+const DEFAULT_FORMAT = '0,0[.][00]';
 
 const toFormattedString = (value: VALUE_TYPE, format: string): string => {
   if (value === undefined || value === null) {
