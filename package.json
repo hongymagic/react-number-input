@@ -37,9 +37,7 @@
   "dependencies": {
     "babel-jest": "^19.0.0",
     "babel-polyfill": "^6.23.0",
-    "numbro": "^1.10.1",
-    "react": "^0.14 || ^15.0.0-rc || ^15.0",
-    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
+    "numbro": "^1.10.1"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",
@@ -56,6 +54,12 @@
     "jest": "^19.0.2",
     "lint-staged": "^3.4.0",
     "prettier": "^0.22.0",
-    "react-addons-test-utils": "^15.4.2"
+    "react-addons-test-utils": "^15.4.2",
+    "react": "^0.14 || ^15.0.0-rc || ^15.0",
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
+  },
+  "peerDependencies": {
+    "react": "^0.14 || ^15.0.0-rc || ^15.0",
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
   }
 }

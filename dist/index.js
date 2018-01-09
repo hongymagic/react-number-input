@@ -94,7 +94,7 @@ function _inherits(subClass, superClass) {
       : (subClass.__proto__ = superClass);
 }
 
-var DEFAULT_FORMAT = '0,0';
+var DEFAULT_FORMAT = '0,0[.][00]';
 
 var toFormattedString = function toFormattedString(value, format) {
   if (value === undefined || value === null) {
