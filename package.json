@@ -1,6 +1,6 @@
 {
   "name": "react-number-input",
-  "version": "15.5.0",
+  "version": "15.6.0",
   "description": "<input /> for numbers, currency and other important numbers",
   "main": "dist/index.js",
   "author": "hongymagic",
