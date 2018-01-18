@@ -1,6 +1,6 @@
 {
   "name": "react-number-input",
-  "version": "15.5.0",
+  "version": "15.6.0",
   "description": "<input /> for numbers, currency and other important numbers",
   "main": "dist/index.js",
   "author": "hongymagic",
@@ -21,7 +21,7 @@
     "currency"
   ],
   "scripts": {
-    "build": "babel index.js -d dist",
+    "build": "webpack -d",
     "flow": "flow",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
@@ -36,10 +36,12 @@
   },
   "dependencies": {
     "babel-jest": "^19.0.0",
+    "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.23.0",
     "numbro": "^1.10.1",
     "react": "^0.14 || ^15.0.0-rc || ^15.0",
-    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0"
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0",
+    "webpack": "^3.10.0"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.21.0",

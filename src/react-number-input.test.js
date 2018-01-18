@@ -1,6 +1,6 @@
 import React from 'react';
 import numbro from 'numbro';
-import NumberInput from './index';
+import NumberInput from './react-number-input';
 import { shallow } from 'enzyme';
 
 const testInitialFormat = states => {

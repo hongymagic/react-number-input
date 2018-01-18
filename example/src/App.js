@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
-import NumberInput from '../../dist/index.js';
+import NumberInput from '../../dist/index';
 import './App.css';
 
 class App extends Component {
@@ -36,7 +36,7 @@ class App extends Component {
 					<p>NumberInput with thousand separators</p>
 					<NumberInput value={this.state.year} />
 					<p>NumberInput with decimal points (2 significant places)</p>
-					<NumberInput value={this.state.PI} format="0.00" />
+					<NumberInput value={199.99} format="$0.00" min={0} max={300}/>
 					<p>Custom renderer</p>
 					<NumberInput
 						value={this.state.PI}
