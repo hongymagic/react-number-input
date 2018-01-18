@@ -7,9 +7,11 @@ node_modules
 coverage
 
 # production
-build
+/dist
+/storybook-static
 
 # misc
 .DS_Store
 .env
 npm-debug.log
+package-lock.json

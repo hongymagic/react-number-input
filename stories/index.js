@@ -1,6 +1,6 @@
-import React from 'react';
-import { storiesOf, action } from '@kadira/storybook';
-import NumberInput from '../index.js';
+import React from 'react'
+import { storiesOf, action } from '@kadira/storybook'
+import NumberInput from '../dist/index'
 
 storiesOf('NumberInput', module)
 	.add('without any properties', () => (
