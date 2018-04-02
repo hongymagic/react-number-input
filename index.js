@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component, Element } from 'react';
+import React, { Component, type Element } from 'react';
 import numbro from 'numbro';
 
 // <NumberInput value={VALUE_TYPE} />
@@ -90,10 +90,7 @@ type State = {
   value: string,
 };
 
-export default class NumberInput extends Component {
-  props: Props;
-  state: State;
-
+export default class NumberInput extends Component<Props, State> {
   static defaultProps = {
     format: DEFAULT_FORMAT,
     type: 'tel',
